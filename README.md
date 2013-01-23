@@ -26,3 +26,7 @@ My poor-man's "OCR" doesn't like Q's and O's. I could supplement the algorithm w
 # Disclaimer
 
 This was built for research purposes only. I am not responsible for misuse of Atebit's Letterpress game. Use at your own risk, preferably with people who know you're cheating/researching.
+
+# License
+
+No license, do whatever you'd like with this.
