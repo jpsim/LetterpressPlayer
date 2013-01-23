@@ -13,70 +13,56 @@
 #import "UIColor+ComponentAdditions.h"
 #import "LetterpressLetter.h"
 #import "UIImage+Resizing.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+
+typedef void (^ActionBlock)();
+typedef void (^ImageActionBlock)(UIImage *image);
 
 @implementation MBViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImage *screenshot = [[UIImage imageNamed:@"l5.png"] cropToSize:CGSizeMake(5*kSquareSize, 5*kSquareSize) usingMode:NYXCropModeBottomLeft];
-//    NSLog(@"colorArray: %@", [self colorArrayFromImage:screenshot]);
-//    NSLog(@"letterArray: %@", [self letterArrayFromImage:screenshot]);
-//    NSLog(@"words: %@", [self wordsForletterArray:[self letterArrayFromImage:screenshot]]);
-//    NSLog(@"imageArray: %@", [self imageArrayFromImage:screenshot]);
-//    UITextView *tv = [[UITextView alloc] initWithFrame:self.view.frame];
-//    [self.view addSubview:tv];
-//    tv.editable = NO;
-//    tv.text = [[self wordsForletterArray:[self letterArrayFromImage:screenshot]] description];
-//
-    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
-        NSInteger grayAmount1 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount1++;
-        }
+    self.view.backgroundColor = [UIColor blackColor];
+    
+    indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    indicator.center = self.view.center;
+    [self.view addSubview:indicator];
+    
+    activityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, indicator.center.y + 40, 320, 40)];
+    activityLabel.backgroundColor = [UIColor blackColor];
+    activityLabel.textColor = [UIColor whiteColor];
+    activityLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:activityLabel];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshResults) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self refreshResults];
+}
+
+- (void)refreshResults {
+    tv.hidden = TRUE;
+    
+    [indicator startAnimating];
+    activityLabel.text = @"Analyzing last photo album image.";
+    
+    [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
+        UIImage *screenshot = image;
         
-        NSInteger grayAmount2 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount2++;
-        }
-        
-        NSInteger grayAmount3 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount3++;
-        }
-        
-        NSInteger grayAmount4 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount4++;
-        }
-        
-        NSInteger grayAmount5 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount5++;
-        }
-        
-        NSInteger grayAmount6 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount6++;
-        }
-        
-        NSString *letter = [self stringForCellWithTextColorArray:@[@(grayAmount1), @(grayAmount2), @(grayAmount3), @(grayAmount4), @(grayAmount5), @(grayAmount6)]];
-        NSLog(@"letter: %@", letter);
-        
-//        NSLog(@"%d: \@[\@%d, \@%d, \@%d, \@%d, \@%d, \@%d]", idx, grayAmount1, grayAmount2, grayAmount3, grayAmount4, grayAmount5, grayAmount6);
-//        int64_t delayInSeconds = 1.0;
-//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, idx * delayInSeconds * NSEC_PER_SEC);
-//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 34, 34)];
-//            img.image = image;
-//            [self.view addSubview:img];
-//        });
+        tv = [[UITextView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:tv];
+        tv.editable = NO;
+        tv.backgroundColor = [UIColor blackColor];
+        tv.textColor = [UIColor whiteColor];
+        tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+        tv.text = [[self wordsForletterArray:[self letterArrayFromImage:screenshot]] description];
+    } failure:^{
+        [indicator stopAnimating];
+        activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
     }];
 }
 
@@ -168,6 +154,49 @@
 }
 
 - (NSArray *)letterArrayFromImage:(UIImage *)image {
+    NSMutableArray *letters = @[].mutableCopy;
+    [[self imageArrayFromImage:image] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+        NSInteger grayAmount1 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount1++;
+        }
+        
+        NSInteger grayAmount2 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount2++;
+        }
+        
+        NSInteger grayAmount3 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount3++;
+        }
+        
+        NSInteger grayAmount4 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount4++;
+        }
+        
+        NSInteger grayAmount5 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount5++;
+        }
+        
+        NSInteger grayAmount6 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
+            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount6++;
+        }
+        
+        NSString *letter = [self stringForCellWithTextColorArray:@[@(grayAmount1), @(grayAmount2), @(grayAmount3), @(grayAmount4), @(grayAmount5), @(grayAmount6)]];
+        [letters addObject:letter];
+    }];
+    
+    return letters;
     return @[@"K", @"K", @"O", @"P", @"W", @"Q", @"H", @"V", @"A", @"I", @"A", @"E", @"D", @"R", @"L", @"S", @"H", @"K", @"E", @"W", @"L", @"X", @"E", @"A", @"V"];
 }
 
@@ -470,6 +499,32 @@
     }];
     
     return [@"ABCDEFGHIJKLMNOPQRSTUVWXYZ" substringWithRange:NSMakeRange(minIndex, 1)];
+}
+
+- (void)getLatestImageFromAlbumWithSuccess:(ImageActionBlock)success failure:(ActionBlock)failure {
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    
+    // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+        
+        // Within the group enumeration block, filter to enumerate just photos.
+        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+        
+        // Chooses the photo at the last index
+        [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:([group numberOfAssets] - 1)] options:0 usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+            
+            // The end of the enumeration is signaled by asset == nil.
+            if (alAsset) {
+                ALAssetRepresentation *representation = [alAsset defaultRepresentation];
+                UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
+                if (success) success(latestPhoto);
+            }
+        }];
+    } failureBlock: ^(NSError *error) {
+        // Typically you should handle an error more gracefully than this.
+        NSLog(@"No groups");
+        if (failure) failure();
+    }];
 }
 
 @end

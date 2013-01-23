@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MBViewController : UIViewController
+@interface MBViewController : UIViewController {
+    UIActivityIndicatorView *indicator;
+    UILabel *activityLabel;
+    UITextView *tv;
+}
 
 @end
