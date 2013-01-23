@@ -7,9 +7,8 @@
 //
 
 #define kSquareSize         128.0
-#define kGenerateDicts      FALSE
+#define kGenerateArrays     FALSE
 #define kRunTests           TRUE
-#define kOCRScalingFactor   1.0
 
 #import "MBViewController.h"
 #import "UIImage+PixelAdditions.h"
@@ -49,8 +48,10 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (void)refreshResults {
-    if (kGenerateDicts) {
+    if (kGenerateArrays) {
         [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+        NSLog(@"----------- the only one left is 'z', look for 'o'");
+        [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
         return;
     } else if (kRunTests) {
         [self runTests];
@@ -168,51 +169,49 @@ typedef void (^ImageActionBlock)(UIImage *image);
 - (NSArray *)letterArrayFromImage:(UIImage *)screenshot {
     NSMutableArray *letters = @[].mutableCopy;
     NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
-    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *cellImage, NSUInteger idx, BOOL *stop) {
-        UIImage *image = [cellImage scaleByFactor:1/kOCRScalingFactor];
-        
+    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
         NSInteger grayHorizontal1 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48/kOCRScalingFactor)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
         }
         
         NSInteger grayHorizontal2 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64/kOCRScalingFactor)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
         }
         
         NSInteger grayHorizontal3 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80/kOCRScalingFactor)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
         }
         
         NSInteger grayVertical1 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(48/kOCRScalingFactor, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
         }
         
         NSInteger grayVertical2 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(64/kOCRScalingFactor, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
         }
         
         NSInteger grayVertical3 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(80/kOCRScalingFactor, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
         }
         
         NSInteger qPoint = 0;
-        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(88/kOCRScalingFactor, 88/kOCRScalingFactor)] components] andReference:textColorArray] < 1) {
+        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(88, 88)] components] andReference:textColorArray] < 1) {
             qPoint = 1;
         }
         
-        if (kGenerateDicts) {
+        if (kGenerateArrays) {
             NSLog(@"NSArray *%@ = @[@%d, @%d, @%d, @%d, @%d, @%d, @%d];", [@"abcdefghijklmnopqrstuvwxyz" substringWithRange:NSMakeRange(idx, 1)], grayHorizontal1, grayHorizontal2, grayHorizontal3, grayVertical1, grayVertical2, grayVertical3, qPoint);
         } else {
             NSString *letter = [self stringForCellWithTextColorArray:@[@(grayHorizontal1), @(grayHorizontal2), @(grayHorizontal3), @(grayVertical1), @(grayVertical2), @(grayVertical3), @(qPoint)]];
