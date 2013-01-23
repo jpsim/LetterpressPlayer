@@ -8,6 +8,8 @@
 
 #define kSquareSize         128.0
 #define kGenerateDicts      FALSE
+#define kRunTests           TRUE
+#define kOCRScalingFactor   1.0
 
 #import "MBViewController.h"
 #import "UIImage+PixelAdditions.h"
@@ -49,6 +51,9 @@ typedef void (^ImageActionBlock)(UIImage *image);
 - (void)refreshResults {
     if (kGenerateDicts) {
         [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+        return;
+    } else if (kRunTests) {
+        [self runTests];
         return;
     }
     tv.hidden = TRUE;
@@ -160,48 +165,50 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return kLetterTypeUnknown;
 }
 
-- (NSArray *)letterArrayFromImage:(UIImage *)image {
+- (NSArray *)letterArrayFromImage:(UIImage *)screenshot {
     NSMutableArray *letters = @[].mutableCopy;
     NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
-    [[self imageArrayFromImage:image] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *cellImage, NSUInteger idx, BOOL *stop) {
+        UIImage *image = [cellImage scaleByFactor:1/kOCRScalingFactor];
+        
         NSInteger grayHorizontal1 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48/kOCRScalingFactor)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
         }
         
         NSInteger grayHorizontal2 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64/kOCRScalingFactor)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
         }
         
         NSInteger grayHorizontal3 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80/kOCRScalingFactor)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
         }
         
         NSInteger grayVertical1 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(48/kOCRScalingFactor, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
         }
         
         NSInteger grayVertical2 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(64/kOCRScalingFactor, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
         }
         
         NSInteger grayVertical3 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
+            NSArray *color = [[image colorAtPoint:CGPointMake(80/kOCRScalingFactor, i)] components];
             if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
         }
         
         NSInteger qPoint = 0;
-        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(73, 73)] components] andReference:textColorArray] < 1) {
+        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(88/kOCRScalingFactor, 88/kOCRScalingFactor)] components] andReference:textColorArray] < 1) {
             qPoint = 1;
         }
         
@@ -445,30 +452,30 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (NSString *)stringForCellWithTextColorArray:(NSArray *)textColorArray {
-    NSArray *a = @[@18, @20, @21, @26, @19, @25, @1];
+    NSArray *a = @[@18, @20, @21, @26, @19, @25, @0];
     NSArray *b = @[@20, @37, @24, @56, @27, @44, @0];
     NSArray *c = @[@12, @10, @32, @43, @19, @21, @0];
     NSArray *d = @[@22, @21, @28, @57, @18, @43, @0];
     NSArray *e = @[@10, @28, @10, @55, @27, @16, @0];
     NSArray *f = @[@10, @28, @10, @0, @18, @9, @0];
-    NSArray *g = @[@12, @28, @34, @36, @19, @29, @0];
+    NSArray *g = @[@12, @28, @34, @36, @19, @29, @1];
     NSArray *h = @[@20, @46, @20, @57, @9, @57, @0];
     NSArray *i = @[@10, @10, @10, @0, @57, @0, @0];
-    NSArray *j = @[@10, @10, @24, @16, @19, @0, @1];
-    NSArray *k = @[@21, @28, @21, @57, @13, @26, @1];
+    NSArray *j = @[@10, @10, @24, @16, @19, @0, @0];
+    NSArray *k = @[@21, @28, @21, @57, @13, @26, @0];
     NSArray *l = @[@10, @10, @10, @0, @9, @9, @0];
-    NSArray *m = @[@36, @38, @20, @19, @11, @17, @0];
-    NSArray *n = @[@30, @31, @26, @57, @17, @57, @1];
+    NSArray *m = @[@36, @38, @20, @19, @11, @17, @1];
+    NSArray *n = @[@30, @31, @26, @57, @17, @57, @0];
     NSArray *o = @[@24, @21, @32, @26, @19, @32, @0];
     NSArray *p = @[@20, @35, @10, @56, @17, @28, @0];
     NSArray *q = @[@24, @21, @35, @28, @19, @28, @1];
-    NSArray *r = @[@20, @31, @21, @57, @18, @36, @1];
-    NSArray *s = @[@10, @19, @26, @26, @31, @21, @1];
+    NSArray *r = @[@20, @31, @21, @57, @18, @36, @0];
+    NSArray *s = @[@10, @19, @26, @26, @31, @21, @0];
     NSArray *t = @[@10, @10, @10, @9, @57, @9, @0];
     NSArray *u = @[@21, @21, @29, @52, @9, @53, @0];
-    NSArray *v = @[@22, @20, @17, @26, @12, @26, @1];
-    NSArray *w = @[@36, @37, @33, @20, @25, @24, @1];
-    NSArray *x = @[@22, @17, @22, @29, @18, @21, @1];
+    NSArray *v = @[@22, @20, @17, @26, @12, @26, @0];
+    NSArray *w = @[@36, @37, @33, @20, @25, @24, @0];
+    NSArray *x = @[@22, @17, @22, @29, @18, @21, @0];
     NSArray *y = @[@21, @11, @10, @16, @35, @12, @0];
     NSArray *z = @[@12, @12, @11, @26, @35, @20, @0];
     
@@ -539,6 +546,65 @@ typedef void (^ImageActionBlock)(UIImage *image);
     } failureBlock: ^(NSError *error) {
         if (failure) failure();
     }];
+}
+
+#pragma mark - Tests
+
+- (void)runTests {
+    for (int i = 0; i <= 13; i++) {
+        NSString *imageName = [NSString stringWithFormat:@"l%d.png", i];
+        NSArray *letterArray = [self letterArrayFromImage:[UIImage imageNamed:imageName]];
+        BOOL valid = [self validateLetterArray:letterArray forTestImage:imageName];
+        NSLog(@"%@ is %@", imageName, valid ? @"valid" : @"invalid");
+        if (!valid) NSLog(@"letterArray: %@", letterArray);
+    }
+}
+
+- (BOOL)validateLetterArray:(NSArray *)letterArray forTestImage:(NSString *)testImage {
+    if ([testImage isEqualToString:@"l0.png"]) {
+        return [letterArray isEqualToArray:@[@"K", @"K", @"O", @"P", @"W", @"Q", @"H", @"V", @"A", @"I", @"A", @"E", @"D", @"R", @"L", @"S", @"H", @"K", @"E", @"W", @"L", @"X", @"E", @"A", @"V"]];
+        
+    } else if ([testImage isEqualToString:@"l1.png"]) {
+        return [letterArray isEqualToArray:@[@"H", @"W", @"D", @"S", @"V", @"U", @"N", @"R", @"I", @"C", @"V", @"F", @"E", @"C", @"N", @"T", @"O", @"D", @"D", @"Y", @"B", @"F", @"P", @"I", @"X"]];
+        
+    } else if ([testImage isEqualToString:@"l2.png"]) {
+        return [letterArray isEqualToArray:@[@"E", @"W", @"A", @"K", @"R", @"P", @"I", @"B", @"D", @"T", @"A", @"C", @"R", @"P", @"Z", @"D", @"Y", @"E", @"S", @"F", @"G", @"T", @"T", @"S", @"A"]];
+        
+    } else if ([testImage isEqualToString:@"l3.png"]) {
+        return [letterArray isEqualToArray:@[@"C", @"H", @"R", @"Z", @"D", @"S", @"T", @"U", @"O", @"D", @"M", @"I", @"W", @"H", @"T", @"Z", @"Y", @"S", @"R", @"R", @"S", @"I", @"Y", @"P", @"I"]];
+        
+    } else if ([testImage isEqualToString:@"l4.png"]) {
+        return [letterArray isEqualToArray:@[@"N", @"M", @"M", @"N", @"N", @"N", @"N", @"D", @"O", @"W", @"P", @"M", @"W", @"S", @"O", @"D", @"U", @"G", @"I", @"C", @"E", @"Z", @"L", @"G", @"R"]];
+        
+    } else if ([testImage isEqualToString:@"l5.png"]) {
+        return [letterArray isEqualToArray:@[@"P", @"E", @"S", @"S", @"V", @"T", @"O", @"X", @"P", @"O", @"I", @"U", @"W", @"O", @"Z", @"C", @"N", @"X", @"H", @"P", @"C", @"F", @"L", @"U", @"I"]];
+        
+    } else if ([testImage isEqualToString:@"l6.png"]) {
+        return [letterArray isEqualToArray:@[@"Y", @"F", @"U", @"M", @"V", @"X", @"P", @"A", @"V", @"X", @"O", @"N", @"M", @"M", @"N", @"M", @"I", @"Q", @"H", @"E", @"A", @"I", @"G", @"M", @"C"]];
+        
+    } else if ([testImage isEqualToString:@"l7.png"]) {
+        return [letterArray isEqualToArray:@[@"A", @"O", @"E", @"B", @"T", @"L", @"M", @"F", @"S", @"V", @"O", @"C", @"S", @"V", @"B", @"O", @"S", @"Z", @"R", @"Z", @"T", @"S", @"C", @"W", @"P"]];
+        
+    } else if ([testImage isEqualToString:@"l8.png"]) {
+        return [letterArray isEqualToArray:@[@"S", @"T", @"N", @"W", @"C", @"H", @"V", @"B", @"R", @"P", @"G", @"I", @"H", @"N", @"U", @"H", @"M", @"U", @"K", @"T", @"O", @"T", @"J", @"I", @"E"]];
+        
+    } else if ([testImage isEqualToString:@"l9.png"]) {
+        return [letterArray isEqualToArray:@[@"R", @"A", @"I", @"P", @"E", @"V", @"T", @"M", @"S", @"Y", @"P", @"F", @"C", @"B", @"Y", @"S", @"Y", @"C", @"W", @"I", @"O", @"B", @"R", @"M", @"L"]];
+        
+    } else if ([testImage isEqualToString:@"l10.png"]) {
+        return [letterArray isEqualToArray:@[@"O", @"Z", @"S", @"D", @"A", @"T", @"L", @"S", @"G", @"Y", @"Y", @"E", @"T", @"L", @"T", @"B", @"I", @"F", @"Y", @"S", @"Y", @"A", @"V", @"C", @"T"]];
+        
+    } else if ([testImage isEqualToString:@"l11.png"]) {
+        return [letterArray isEqualToArray:@[@"S", @"P", @"T", @"A", @"D", @"R", @"L", @"O", @"N", @"P", @"N", @"E", @"E", @"N", @"P", @"S", @"V", @"Y", @"O", @"X", @"L", @"M", @"X", @"O", @"X"]];
+        
+    } else if ([testImage isEqualToString:@"l12.png"]) {
+        return [letterArray isEqualToArray:@[@"Q", @"G", @"E", @"F", @"J", @"V", @"I", @"F", @"B", @"W", @"M", @"K", @"R", @"M", @"E", @"N", @"S", @"I", @"P", @"P", @"M", @"V", @"V", @"U", @"E"]];
+        
+    } else if ([testImage isEqualToString:@"l13.png"]) {
+        return [letterArray isEqualToArray:@[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y"]];
+        
+    }
+    return NO;
 }
 
 @end
