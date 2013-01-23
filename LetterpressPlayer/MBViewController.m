@@ -8,7 +8,7 @@
 
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
-#define kRunTests           TRUE
+#define kRunTests           FALSE
 
 #import "MBViewController.h"
 #import "UIImage+PixelAdditions.h"
