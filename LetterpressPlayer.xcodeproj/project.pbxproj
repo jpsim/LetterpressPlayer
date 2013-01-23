@@ -23,6 +23,7 @@
 		E8E357AB16AFADDA007B3B50 /* sample.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E357AA16AFADDA007B3B50 /* sample.png */; };
 		E8E357AE16AFAF48007B3B50 /* UIColor+ComponentAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */; };
 		E8E357B116AFCAC9007B3B50 /* LetterpressLetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */; };
+		E8E357B416AFD991007B3B50 /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357B316AFD991007B3B50 /* UIImage+Resizing.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,8 @@
 		E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ComponentAdditions.m"; sourceTree = "<group>"; };
 		E8E357AF16AFCAC9007B3B50 /* LetterpressLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LetterpressLetter.h; sourceTree = "<group>"; };
 		E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LetterpressLetter.m; sourceTree = "<group>"; };
+		E8E357B216AFD991007B3B50 /* UIImage+Resizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resizing.h"; sourceTree = "<group>"; };
+		E8E357B316AFD991007B3B50 /* UIImage+Resizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resizing.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +113,8 @@
 				E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */,
 				E8E357AF16AFCAC9007B3B50 /* LetterpressLetter.h */,
 				E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */,
+				E8E357B216AFD991007B3B50 /* UIImage+Resizing.h */,
+				E8E357B316AFD991007B3B50 /* UIImage+Resizing.m */,
 			);
 			path = LetterpressPlayer;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 				E8E357A716AFACEC007B3B50 /* UIImage+PixelAdditions.m in Sources */,
 				E8E357AE16AFAF48007B3B50 /* UIColor+ComponentAdditions.m in Sources */,
 				E8E357B116AFCAC9007B3B50 /* LetterpressLetter.m in Sources */,
+				E8E357B416AFD991007B3B50 /* UIImage+Resizing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

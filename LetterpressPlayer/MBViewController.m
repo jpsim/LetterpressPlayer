@@ -12,6 +12,7 @@
 #import "UIImage+PixelAdditions.h"
 #import "UIColor+ComponentAdditions.h"
 #import "LetterpressLetter.h"
+#import "UIImage+Resizing.h"
 
 @implementation MBViewController
 
@@ -19,24 +20,35 @@
     [super viewDidLoad];
     
     UIImage *screenshot = [UIImage imageNamed:@"sample.png"];
-//    NSLog(@"colorBlock: %@", [self colorBlockFromImage:screenshot]);
-//    NSLog(@"letterBlock: %@", [self letterBlockFromImage:screenshot]);
-//    NSLog(@"words: %@", [self wordsForLetterBlock:[self letterBlockFromImage:screenshot]]);
-    UITextView *tv = [[UITextView alloc] initWithFrame:self.view.frame];
-    [self.view addSubview:tv];
-    tv.editable = NO;
-    tv.text = [[self wordsForLetterBlock:[self letterBlockFromImage:screenshot]] description];
+//    NSLog(@"colorArray: %@", [self colorArrayFromImage:screenshot]);
+//    NSLog(@"letterArray: %@", [self letterArrayFromImage:screenshot]);
+//    NSLog(@"words: %@", [self wordsForletterArray:[self letterArrayFromImage:screenshot]]);
+//    NSLog(@"imageArray: %@", [self imageArrayFromImage:screenshot]);
+//    UITextView *tv = [[UITextView alloc] initWithFrame:self.view.frame];
+//    [self.view addSubview:tv];
+//    tv.editable = NO;
+//    tv.text = [[self wordsForletterArray:[self letterArrayFromImage:screenshot]] description];
+//
+    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+        int64_t delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, idx * delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (kSquareSize)/2, (kSquareSize)/2)];
+            img.image = image;
+            [self.view addSubview:img];
+        });
+    }];
 }
 
-- (NSArray *)colorBlockFromImage:(UIImage *)image {
-    __block NSMutableArray *colorBlock = @[].mutableCopy;
+- (NSArray *)colorArrayFromImage:(UIImage *)image {
+    __block NSMutableArray *colorArray = @[].mutableCopy;
     NSArray *points = [self pointsForBucketColors];
     
     [points enumerateObjectsUsingBlock:^(NSValue *pointValue, NSUInteger idx, BOOL *stop) {
         NSInteger type = [self letterTypeForColor:[image colorAtPoint:[pointValue CGPointValue]]];
-        [colorBlock addObject:@(type)];
+        [colorArray addObject:@(type)];
     }];
-    return colorBlock;
+    return colorArray;
 }
 
 - (NSArray *)pointsForBucketColors {
@@ -115,7 +127,7 @@
     return kLetterTypeUnknown;
 }
 
-- (NSArray *)letterBlockFromImage:(UIImage *)image {
+- (NSArray *)letterArrayFromImage:(UIImage *)image {
     return @[@"K", @"K", @"O", @"P", @"W", @"Q", @"H", @"V", @"A", @"I", @"A", @"E", @"D", @"R", @"L", @"S", @"H", @"K", @"E", @"W", @"L", @"X", @"E", @"A", @"V"];
 }
 
@@ -126,18 +138,18 @@
     return words;
 }
 
-- (NSArray *)wordsForLetterBlock:(NSArray *)letterBlock {
-    NSMutableString *letterBlockString = @"".mutableCopy;
-    for (NSString *letter in letterBlock) {
-        [letterBlockString appendString:letter.lowercaseString];
+- (NSArray *)wordsForletterArray:(NSArray *)letterArray {
+    NSMutableString *letterArrayString = @"".mutableCopy;
+    for (NSString *letter in letterArray) {
+        [letterArrayString appendString:letter.lowercaseString];
     }
-    NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterBlockString];
+    NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
     NSArray *words = [self masterWordList];
     
     NSMutableArray *matchedWords = @[].mutableCopy;
     for (NSString *word in words) {
         if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
-            NSMutableArray *charactersLeft = letterBlock.mutableCopy;
+            NSMutableArray *charactersLeft = letterArray.mutableCopy;
             for (NSString *c in [self charactersFromString:word]) {
                 NSString *uppercaseLetter = c.uppercaseString;
                 NSUInteger indexOfLetter = [charactersLeft indexOfObject:uppercaseLetter];
@@ -147,7 +159,7 @@
                     break;
                 }
             }
-            if (charactersLeft.count == letterBlock.count - word.length) {
+            if (charactersLeft.count == letterArray.count - word.length) {
                 [matchedWords addObject:word];
             }
         }
@@ -165,6 +177,178 @@
         [characters addObject:ichar];
     }
     return characters;
+}
+
+- (NSArray *)imageArrayFromImage:(UIImage *)image {
+    NSMutableArray *imagesArray = @[].mutableCopy;
+    UIImage *gameSquare = [image cropToSize:CGSizeMake(5*kSquareSize, 5*kSquareSize) usingMode:NYXCropModeBottomLeft];
+    for (int i = 0; i < 25; i++) {
+        [imagesArray addObject:[self squareImage:gameSquare index:i]];
+    }
+    return imagesArray;
+}
+
+- (UIImage *)squareImage:(UIImage *)image index:(NSInteger)index {
+    switch (index) {
+        case 0:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopLeft];
+            break;
+            
+        case 1:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeTopLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopCenter];
+            break;
+        }
+            
+        case 2:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopCenter];
+            break;
+            
+        case 3:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeTopRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopCenter];
+            break;
+        }
+            
+        case 4:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopRight];
+            break;
+            
+        case 5:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeTopLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+        }
+            
+        case 6:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeTopLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomRight];
+            break;
+        }
+            
+        case 7:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeTopLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeRightCenter];
+            break;
+        }
+            
+        case 8:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeTopRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+        }
+            
+        case 9:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeTopRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomRight];
+            break;
+        }
+            
+        case 10:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeLeftCenter];
+            break;
+            
+        case 11:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopCenter];
+            break;
+        }
+            
+        case 12:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeCenter];
+            break;
+            
+        case 13:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopCenter];
+            break;
+        }
+            
+        case 14:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeRightCenter];
+            break;
+            
+        case 15:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopLeft];
+            break;
+        }
+            
+        case 16:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomLeft];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopRight];
+            break;
+        }
+            
+        case 17:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeLeftCenter];
+            break;
+        }
+            
+        case 18:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopLeft];
+            break;
+        }
+            
+        case 19:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeTopRight];
+            break;
+        }
+            
+        case 20:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+            
+        case 21:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomLeft];
+            partial = [partial cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+        }
+            
+        case 22:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+        }
+            
+        case 23:
+        {
+            UIImage *partial = [image cropToSize:CGSizeMake(3*kSquareSize, 3*kSquareSize) usingMode:NYXCropModeBottomRight];
+            partial = [partial cropToSize:CGSizeMake(2*kSquareSize, 2*kSquareSize) usingMode:NYXCropModeBottomRight];
+            return [partial cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomLeft];
+            break;
+        }
+            
+        case 24:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeBottomRight];
+            break;
+            
+        default:
+            return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeCenter];
+            break;
+    }
+    
+    return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeCenter];
 }
 
 @end
