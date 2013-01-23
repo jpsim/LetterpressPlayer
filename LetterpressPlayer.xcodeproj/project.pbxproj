@@ -18,6 +18,11 @@
 		E8E3579916AFACD0007B3B50 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E3579816AFACD0007B3B50 /* Default-568h@2x.png */; };
 		E8E3579C16AFACD0007B3B50 /* MBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E3579B16AFACD0007B3B50 /* MBViewController.m */; };
 		E8E3579F16AFACD0007B3B50 /* MBViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E8E3579D16AFACD0007B3B50 /* MBViewController.xib */; };
+		E8E357A716AFACEC007B3B50 /* UIImage+PixelAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357A616AFACEC007B3B50 /* UIImage+PixelAdditions.m */; };
+		E8E357A916AFAD21007B3B50 /* en_longest_to_shortest.txt in Resources */ = {isa = PBXBuildFile; fileRef = E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */; };
+		E8E357AB16AFADDA007B3B50 /* sample.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E357AA16AFADDA007B3B50 /* sample.png */; };
+		E8E357AE16AFAF48007B3B50 /* UIColor+ComponentAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */; };
+		E8E357B116AFCAC9007B3B50 /* LetterpressLetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +42,14 @@
 		E8E3579A16AFACD0007B3B50 /* MBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBViewController.h; sourceTree = "<group>"; };
 		E8E3579B16AFACD0007B3B50 /* MBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBViewController.m; sourceTree = "<group>"; };
 		E8E3579E16AFACD0007B3B50 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MBViewController.xib; sourceTree = "<group>"; };
+		E8E357A516AFACEC007B3B50 /* UIImage+PixelAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PixelAdditions.h"; sourceTree = "<group>"; };
+		E8E357A616AFACEC007B3B50 /* UIImage+PixelAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PixelAdditions.m"; sourceTree = "<group>"; };
+		E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en_longest_to_shortest.txt; sourceTree = "<group>"; };
+		E8E357AA16AFADDA007B3B50 /* sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sample.png; sourceTree = "<group>"; };
+		E8E357AC16AFAF48007B3B50 /* UIColor+ComponentAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ComponentAdditions.h"; sourceTree = "<group>"; };
+		E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ComponentAdditions.m"; sourceTree = "<group>"; };
+		E8E357AF16AFCAC9007B3B50 /* LetterpressLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LetterpressLetter.h; sourceTree = "<group>"; };
+		E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LetterpressLetter.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,12 +96,20 @@
 		E8E3578816AFACD0007B3B50 /* LetterpressPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				E8E357AA16AFADDA007B3B50 /* sample.png */,
+				E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */,
 				E8E3579116AFACD0007B3B50 /* MBAppDelegate.h */,
 				E8E3579216AFACD0007B3B50 /* MBAppDelegate.m */,
 				E8E3579A16AFACD0007B3B50 /* MBViewController.h */,
 				E8E3579B16AFACD0007B3B50 /* MBViewController.m */,
 				E8E3579D16AFACD0007B3B50 /* MBViewController.xib */,
 				E8E3578916AFACD0007B3B50 /* Supporting Files */,
+				E8E357A516AFACEC007B3B50 /* UIImage+PixelAdditions.h */,
+				E8E357A616AFACEC007B3B50 /* UIImage+PixelAdditions.m */,
+				E8E357AC16AFAF48007B3B50 /* UIColor+ComponentAdditions.h */,
+				E8E357AD16AFAF48007B3B50 /* UIColor+ComponentAdditions.m */,
+				E8E357AF16AFCAC9007B3B50 /* LetterpressLetter.h */,
+				E8E357B016AFCAC9007B3B50 /* LetterpressLetter.m */,
 			);
 			path = LetterpressPlayer;
 			sourceTree = "<group>";
@@ -164,6 +185,8 @@
 				E8E3579716AFACD0007B3B50 /* Default@2x.png in Resources */,
 				E8E3579916AFACD0007B3B50 /* Default-568h@2x.png in Resources */,
 				E8E3579F16AFACD0007B3B50 /* MBViewController.xib in Resources */,
+				E8E357A916AFAD21007B3B50 /* en_longest_to_shortest.txt in Resources */,
+				E8E357AB16AFADDA007B3B50 /* sample.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,6 +200,9 @@
 				E8E3578F16AFACD0007B3B50 /* main.m in Sources */,
 				E8E3579316AFACD0007B3B50 /* MBAppDelegate.m in Sources */,
 				E8E3579C16AFACD0007B3B50 /* MBViewController.m in Sources */,
+				E8E357A716AFACEC007B3B50 /* UIImage+PixelAdditions.m in Sources */,
+				E8E357AE16AFAF48007B3B50 /* UIColor+ComponentAdditions.m in Sources */,
+				E8E357B116AFCAC9007B3B50 /* LetterpressLetter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
