@@ -19,7 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImage *screenshot = [UIImage imageNamed:@"sample.png"];
+//    UIImage *screenshot = [UIImage imageNamed:@"sample.png"];
 //    NSLog(@"colorArray: %@", [self colorArrayFromImage:screenshot]);
 //    NSLog(@"letterArray: %@", [self letterArrayFromImage:screenshot]);
 //    NSLog(@"words: %@", [self wordsForletterArray:[self letterArrayFromImage:screenshot]]);
@@ -29,15 +29,15 @@
 //    tv.editable = NO;
 //    tv.text = [[self wordsForletterArray:[self letterArrayFromImage:screenshot]] description];
 //
-    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
-        int64_t delayInSeconds = 1.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, idx * delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (kSquareSize)/2, (kSquareSize)/2)];
-            img.image = image;
-            [self.view addSubview:img];
-        });
-    }];
+//    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+//        int64_t delayInSeconds = 1.0;
+//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, idx * delayInSeconds * NSEC_PER_SEC);
+//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (kSquareSize)/2, (kSquareSize)/2)];
+//            img.image = image;
+//            [self.view addSubview:img];
+//        });
+//    }];
 }
 
 - (NSArray *)colorArrayFromImage:(UIImage *)image {
