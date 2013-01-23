@@ -12,6 +12,7 @@
     UIActivityIndicatorView *indicator;
     UILabel *activityLabel;
     UITextView *tv;
+    NSArray *masterWordList;
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #define kSquareSize         128.0
+#define kGenerateDicts      FALSE
 
 #import "MBViewController.h"
 #import "UIImage+PixelAdditions.h"
@@ -22,6 +23,8 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    masterWordList = [self masterWordList];
     
     self.view.backgroundColor = [UIColor blackColor];
     
@@ -40,11 +43,14 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     [self refreshResults];
 }
 
 - (void)refreshResults {
+    if (kGenerateDicts) {
+        [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+        return;
+    }
     tv.hidden = TRUE;
     
     [indicator startAnimating];
@@ -59,7 +65,8 @@ typedef void (^ImageActionBlock)(UIImage *image);
         tv.backgroundColor = [UIColor blackColor];
         tv.textColor = [UIColor whiteColor];
         tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-        tv.text = [[self wordsForletterArray:[self letterArrayFromImage:screenshot]] description];
+        NSArray *letterArray = [self letterArrayFromImage:screenshot];
+        tv.text = [[self wordsForletterArray:letterArray] description];
     } failure:^{
         [indicator stopAnimating];
         activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
@@ -155,49 +162,58 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 - (NSArray *)letterArrayFromImage:(UIImage *)image {
     NSMutableArray *letters = @[].mutableCopy;
+    NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
     [[self imageArrayFromImage:image] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
-        NSInteger grayAmount1 = 0;
+        NSInteger grayHorizontal1 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount1++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
         }
         
-        NSInteger grayAmount2 = 0;
+        NSInteger grayHorizontal2 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount2++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
         }
         
-        NSInteger grayAmount3 = 0;
+        NSInteger grayHorizontal3 = 0;
         for (int i = 0; i < floor(image.size.width); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount3++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
         }
         
-        NSInteger grayAmount4 = 0;
+        NSInteger grayVertical1 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount4++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
         }
         
-        NSInteger grayAmount5 = 0;
+        NSInteger grayVertical2 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount5++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
         }
         
-        NSInteger grayAmount6 = 0;
+        NSInteger grayVertical3 = 0;
         for (int i = 0; i < floor(image.size.height); i++) {
             NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
-            if ([self deviationBetweenArray:color andReference:@[@(0.09411765), @(0.1568628), @(0.1921569), @(1)]] < 1) grayAmount6++;
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
         }
         
-        NSString *letter = [self stringForCellWithTextColorArray:@[@(grayAmount1), @(grayAmount2), @(grayAmount3), @(grayAmount4), @(grayAmount5), @(grayAmount6)]];
-        [letters addObject:letter];
+        NSInteger qPoint = 0;
+        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(73, 73)] components] andReference:textColorArray] < 1) {
+            qPoint = 1;
+        }
+        
+        if (kGenerateDicts) {
+            NSLog(@"NSArray *%@ = @[@%d, @%d, @%d, @%d, @%d, @%d, @%d];", [@"abcdefghijklmnopqrstuvwxyz" substringWithRange:NSMakeRange(idx, 1)], grayHorizontal1, grayHorizontal2, grayHorizontal3, grayVertical1, grayVertical2, grayVertical3, qPoint);
+        } else {
+            NSString *letter = [self stringForCellWithTextColorArray:@[@(grayHorizontal1), @(grayHorizontal2), @(grayHorizontal3), @(grayVertical1), @(grayVertical2), @(grayVertical3), @(qPoint)]];
+            [letters addObject:letter];
+        }
     }];
     
     return letters;
-    return @[@"K", @"K", @"O", @"P", @"W", @"Q", @"H", @"V", @"A", @"I", @"A", @"E", @"D", @"R", @"L", @"S", @"H", @"K", @"E", @"W", @"L", @"X", @"E", @"A", @"V"];
 }
 
 - (NSArray *)masterWordList {
@@ -213,10 +229,9 @@ typedef void (^ImageActionBlock)(UIImage *image);
         [letterArrayString appendString:letter.lowercaseString];
     }
     NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
-    NSArray *words = [self masterWordList];
     
     NSMutableArray *matchedWords = @[].mutableCopy;
-    for (NSString *word in words) {
+    for (NSString *word in masterWordList) {
         if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
             NSMutableArray *charactersLeft = letterArray.mutableCopy;
             for (NSString *c in [self charactersFromString:word]) {
@@ -232,7 +247,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
                 [matchedWords addObject:word];
             }
         }
-        if (matchedWords.count > 100) {
+        if (matchedWords.count > 500) {
             break;
         }
     }
@@ -420,10 +435,6 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeCenter];
 }
 
-- (NSArray *)amountOfTextColorPerLetterBoxSection {
-    return nil;
-}
-
 - (CGFloat)deviationBetweenArray:(NSArray *)array andReference:(NSArray *)reference {
     if (array.count != reference.count) return MAXFLOAT;
     CGFloat deviation = 0;
@@ -434,32 +445,32 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (NSString *)stringForCellWithTextColorArray:(NSArray *)textColorArray {
-    NSArray *a = @[@18, @20, @21, @26, @19, @25];
-    NSArray *b = @[@20, @37, @24, @56, @27, @44];
-    NSArray *c = @[@12, @10, @32, @43, @19, @21];
-    NSArray *d = @[@22, @21, @28, @57, @18, @43];
-    NSArray *e = @[@10, @28, @10, @55, @27, @16];
-    NSArray *f = @[@10, @28, @10, @0, @18, @9];
-    NSArray *g = @[@12, @28, @34, @36, @19, @29];
-    NSArray *h = @[@20, @46, @20, @57, @9, @57];
-    NSArray *i = @[@10, @10, @10, @0, @57, @0];
-    NSArray *j = @[@10, @10, @24, @16, @19, @0];
-    NSArray *k = @[@21, @28, @21, @57, @13, @26];
-    NSArray *l = @[@10, @10, @10, @0, @9, @9];
-    NSArray *m = @[@36, @38, @20, @19, @11, @17];
-    NSArray *n = @[@30, @31, @26, @57, @17, @57];
-    NSArray *o = @[@24, @21, @32, @26, @19, @32];
-    NSArray *p = @[@20, @35, @10, @56, @17, @28];
-    NSArray *q = @[@24, @21, @35, @28, @19, @28];
-    NSArray *r = @[@20, @31, @21, @57, @18, @36];
-    NSArray *s = @[@10, @19, @26, @26, @31, @21];
-    NSArray *t = @[@10, @10, @10, @9, @57, @9];
-    NSArray *u = @[@21, @21, @29, @52, @9, @53];
-    NSArray *v = @[@22, @20, @17, @26, @12, @26];
-    NSArray *w = @[@36, @37, @33, @20, @25, @24];
-    NSArray *x = @[@22, @17, @22, @29, @18, @21];
-    NSArray *y = @[@21, @11, @10, @16, @35, @12];
-    NSArray *z = @[@12, @12, @11, @26, @35, @20];
+    NSArray *a = @[@18, @20, @21, @26, @19, @25, @1];
+    NSArray *b = @[@20, @37, @24, @56, @27, @44, @0];
+    NSArray *c = @[@12, @10, @32, @43, @19, @21, @0];
+    NSArray *d = @[@22, @21, @28, @57, @18, @43, @0];
+    NSArray *e = @[@10, @28, @10, @55, @27, @16, @0];
+    NSArray *f = @[@10, @28, @10, @0, @18, @9, @0];
+    NSArray *g = @[@12, @28, @34, @36, @19, @29, @0];
+    NSArray *h = @[@20, @46, @20, @57, @9, @57, @0];
+    NSArray *i = @[@10, @10, @10, @0, @57, @0, @0];
+    NSArray *j = @[@10, @10, @24, @16, @19, @0, @1];
+    NSArray *k = @[@21, @28, @21, @57, @13, @26, @1];
+    NSArray *l = @[@10, @10, @10, @0, @9, @9, @0];
+    NSArray *m = @[@36, @38, @20, @19, @11, @17, @0];
+    NSArray *n = @[@30, @31, @26, @57, @17, @57, @1];
+    NSArray *o = @[@24, @21, @32, @26, @19, @32, @0];
+    NSArray *p = @[@20, @35, @10, @56, @17, @28, @0];
+    NSArray *q = @[@24, @21, @35, @28, @19, @28, @1];
+    NSArray *r = @[@20, @31, @21, @57, @18, @36, @1];
+    NSArray *s = @[@10, @19, @26, @26, @31, @21, @1];
+    NSArray *t = @[@10, @10, @10, @9, @57, @9, @0];
+    NSArray *u = @[@21, @21, @29, @52, @9, @53, @0];
+    NSArray *v = @[@22, @20, @17, @26, @12, @26, @1];
+    NSArray *w = @[@36, @37, @33, @20, @25, @24, @1];
+    NSArray *x = @[@22, @17, @22, @29, @18, @21, @1];
+    NSArray *y = @[@21, @11, @10, @16, @35, @12, @0];
+    NSArray *z = @[@12, @12, @11, @26, @35, @20, @0];
     
     NSMutableArray *deviations = @[].mutableCopy;
     [deviations addObject:@([self deviationBetweenArray:textColorArray andReference:a])];
@@ -498,7 +509,12 @@ typedef void (^ImageActionBlock)(UIImage *image);
         }
     }];
     
-    return [@"ABCDEFGHIJKLMNOPQRSTUVWXYZ" substringWithRange:NSMakeRange(minIndex, 1)];
+    NSString *letter = [@"ABCDEFGHIJKLMNOPQRSTUVWXYZ" substringWithRange:NSMakeRange(minIndex, 1)];
+    if ([letter isEqualToString:@"O"] && [textColorArray.lastObject integerValue] == 1) {
+        letter = @"Q";
+    }
+    
+    return letter;
 }
 
 - (void)getLatestImageFromAlbumWithSuccess:(ImageActionBlock)success failure:(ActionBlock)failure {
@@ -521,8 +537,6 @@ typedef void (^ImageActionBlock)(UIImage *image);
             }
         }];
     } failureBlock: ^(NSError *error) {
-        // Typically you should handle an error more gracefully than this.
-        NSLog(@"No groups");
         if (failure) failure();
     }];
 }

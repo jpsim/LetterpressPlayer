@@ -19,10 +19,6 @@ Right now, this is more of a "cheating" app, but the end goal is to have a fully
 3. Determine most valuable word by taking into account box colours. These are already being extracted, just not used.
 4. Build a physical iOS testing machine to automate playing.
 
-# Known Issues
-
-My poor-man's "OCR" doesn't like Q's and O's. I could supplement the algorithm with diagonal checksums as well as the existing 9 sums.
-
 # Disclaimer
 
 This was built for research purposes only. I am not responsible for misuse of Atebit's Letterpress game. Use at your own risk, preferably with people who know you're cheating/researching.
