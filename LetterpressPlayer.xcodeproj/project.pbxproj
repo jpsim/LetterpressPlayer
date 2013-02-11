@@ -362,10 +362,12 @@
 		E8E357A416AFACD0007B3B50 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Magnetic Bear Studios Inc.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterpressPlayer-Prefix.pch";
 				INFOPLIST_FILE = "LetterpressPlayer/LetterpressPlayer-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "12FC698E-B47B-4700-9A08-1A7E9AA734B3";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
