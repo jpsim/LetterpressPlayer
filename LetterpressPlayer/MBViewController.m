@@ -26,6 +26,16 @@ typedef void (^ImageActionBlock)(UIImage *image);
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if (kGenerateArrays) {
+        [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+        NSLog(@"----------- the only one left is 'z', look for 'o'");
+        [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
+        return;
+    } else if (kRunTests) {
+        [self runTests];
+        return;
+    }
+    
     masterWordList = [self masterWordList];
     
     self.view.backgroundColor = [UIColor blackColor];
@@ -40,47 +50,47 @@ typedef void (^ImageActionBlock)(UIImage *image);
     activityLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:activityLabel];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshResults) name:UIApplicationWillEnterForegroundNotification object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self refreshResults];
+    tv = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 44)];
+    [self.view addSubview:tv];
+    tv.editable = NO;
+    tv.backgroundColor = [UIColor blackColor];
+    tv.textColor = [UIColor whiteColor];
+    tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+    
+    refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    refreshButton.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+    [refreshButton setTitle:@"Analyze last photo album image" forState:UIControlStateNormal];
+    [refreshButton addTarget:self action:@selector(refreshResults) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:refreshButton];
 }
 
 - (void)refreshResults {
-    if (kGenerateArrays) {
-        [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
-        NSLog(@"----------- the only one left is 'z', look for 'o'");
-        [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
-        return;
-    } else if (kRunTests) {
-        [self runTests];
-        return;
-    }
     tv.hidden = TRUE;
+    refreshButton.hidden = TRUE;
     
     [indicator startAnimating];
     activityLabel.text = @"Analyzing last photo album image.";
     
-    [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
-        UIImage *screenshot = image;
-        
-        tv = [[UITextView alloc] initWithFrame:self.view.frame];
-        [self.view addSubview:tv];
-        tv.editable = NO;
-        tv.backgroundColor = [UIColor blackColor];
-        tv.textColor = [UIColor whiteColor];
-        tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-        NSArray *letters = [self letterArrayFromImage:screenshot];
-        NSArray *words = [self wordsForletterArray:letters];
-        NSArray *colors = [self colorArrayFromImage:screenshot];
-        NSArray *wordsSortedByPoints = [self wordsSortedByScores:words letters:letters colors:colors];
-        tv.text = wordsSortedByPoints.description;
-    } failure:^{
-        [indicator stopAnimating];
-        activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
-    }];
+    double delayInSeconds = 0.1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
+            tv.hidden = FALSE;
+            refreshButton.hidden = FALSE;
+            tv.text = [self finalWordsFromImage:image].description;
+        } failure:^{
+            [indicator stopAnimating];
+            activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
+        }];
+    });
+}
+
+- (NSArray *)finalWordsFromImage:(UIImage *)image {
+    NSArray *letters = [self letterArrayFromImage:image];
+    NSArray *words = [self wordsForletterArray:letters];
+    NSArray *colors = [self colorArrayFromImage:image];
+    NSArray *wordsSortedByPoints = [self wordsSortedByScores:words letters:letters colors:colors];
+    return wordsSortedByPoints;
 }
 
 - (NSArray *)colorArrayFromImage:(UIImage *)image {
