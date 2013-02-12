@@ -244,9 +244,6 @@ typedef void (^ImageActionBlock)(UIImage *image);
                 [matchedWords addObject:word];
             }
         }
-        if (matchedWords.count > 500) {
-            break;
-        }
     }
     return matchedWords;
 }
