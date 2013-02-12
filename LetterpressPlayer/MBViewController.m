@@ -9,6 +9,7 @@
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
 #define kRunTests           FALSE
+#define kSortStrategyKill   TRUE
 
 #import "MBViewController.h"
 #import "UIImage+PixelAdditions.h"
@@ -71,8 +72,11 @@ typedef void (^ImageActionBlock)(UIImage *image);
         tv.backgroundColor = [UIColor blackColor];
         tv.textColor = [UIColor whiteColor];
         tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-        NSArray *letterArray = [self letterArrayFromImage:screenshot];
-        tv.text = [[self wordsForletterArray:letterArray] description];
+        NSArray *letters = [self letterArrayFromImage:screenshot];
+        NSArray *words = [self wordsForletterArray:letters];
+        NSArray *colors = [self colorArrayFromImage:screenshot];
+        NSArray *wordsSortedByPoints = [self wordsSortedByScores:words letters:letters colors:colors];
+        tv.text = wordsSortedByPoints.description;
     } failure:^{
         [indicator stopAnimating];
         activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
@@ -80,27 +84,14 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (NSArray *)colorArrayFromImage:(UIImage *)image {
-    __block NSMutableArray *colorArray = @[].mutableCopy;
-    NSArray *points = [self pointsForBucketColors];
-    
-    [points enumerateObjectsUsingBlock:^(NSValue *pointValue, NSUInteger idx, BOOL *stop) {
-        NSInteger type = [self letterTypeForColor:[image colorAtPoint:[pointValue CGPointValue]]];
+    NSMutableArray *colorArray = @[].mutableCopy;
+    NSArray *squareImages = [self imageArrayFromImage:image];
+    for (UIImage *squareImage in squareImages) {
+        NSInteger type = [self letterTypeForColor:[squareImage colorAtPoint:CGPointMake(10, 10)]];
         [colorArray addObject:@(type)];
-    }];
-    return colorArray;
-}
-
-- (NSArray *)pointsForBucketColors {
-    NSMutableArray *points = @[].mutableCopy;
-    CGPoint offset = CGPointMake(2, 2);
-    for (int i = 0; i < 25; i++) {
-        CGFloat x = offset.x + ((i % 5) * kSquareSize);
-        CGFloat y = offset.y + (floor(i/5) * kSquareSize);
-        CGPoint point = CGPointMake(x, y);
-        NSValue *pointValue = [NSValue valueWithCGPoint:point];
-        [points addObject:pointValue];
     }
-    return points;
+    
+    return colorArray;
 }
 
 - (kLetterType)letterTypeForColor:(UIColor *)color {
@@ -258,6 +249,62 @@ typedef void (^ImageActionBlock)(UIImage *image);
         }
     }
     return matchedWords;
+}
+
+- (NSArray *)wordsSortedByScores:(NSArray *)words letters:(NSArray *)letters colors:(NSArray *)colors {
+    NSMutableArray *wordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
+    NSMutableArray *actualWordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
+    NSMutableArray *letterScores = [[NSMutableArray alloc] initWithCapacity:colors.count];
+    NSMutableArray *mWords = [[NSMutableArray alloc] initWithCapacity:words.count];
+    
+    for (NSNumber *n in colors) {
+        NSInteger letterScore = 0;
+        if (n.integerValue == kLetterTypeGray) {
+            letterScore = 1;
+        } else if (n.integerValue == kLetterTypeLightRed) {
+            letterScore = 2;
+        }
+        [letterScores addObject:@(letterScore)];
+    }
+    
+    for (NSString *word in words) {
+        NSMutableArray *mLetters = letters.mutableCopy;
+        NSMutableArray *mLetterScores = letterScores.mutableCopy;
+        NSInteger wordScore = 0;
+        NSInteger actualWordScore = 0;
+        for (NSString *c in [self charactersFromString:word]) {
+            __block NSInteger bestScore = 0;
+            __block NSInteger bestIndex = 0;
+            [mLetters enumerateObjectsUsingBlock:^(NSString *letter, NSUInteger idx, BOOL *stop) {
+                if ([letter.lowercaseString isEqualToString:c]) {
+                    NSInteger letterScore = [[mLetterScores objectAtIndex:idx] integerValue];
+                    if (letterScore > bestScore) {
+                        bestScore = letterScore;
+                        bestIndex = idx;
+                    }
+                }
+            }];
+            wordScore += bestScore;
+            actualWordScore += bestScore ? 1 : 0;
+            [mLetters removeObjectAtIndex:bestIndex];
+            [mLetterScores removeObjectAtIndex:bestIndex];
+        }
+        [wordScores addObject:@(wordScore)];
+        [actualWordScores addObject:@(actualWordScore)];
+        [mWords addObject:[NSString stringWithFormat:@"%d/%d: %@", wordScore, actualWordScore, word]];
+    }
+    
+    NSArray *sorter = kSortStrategyKill ? wordScores : actualWordScores;
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:sorter forKeys:mWords];
+    NSArray *sortedWords = [dict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        int int1 = [obj1 integerValue];
+        int int2 = [obj2 integerValue];
+        if (int1 == int2) return NSOrderedSame;
+        return (int1 < int2 ? NSOrderedAscending : NSOrderedDescending);
+    }];
+    
+    return [[sortedWords reverseObjectEnumerator] allObjects];
 }
 
 - (NSArray *)charactersFromString:(NSString *)string {
