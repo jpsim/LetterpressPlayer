@@ -104,7 +104,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
         refreshCountButton.enabled = FALSE;
         
         [indicator startAnimating];
-        activityLabel.text = @"Refreshing cell count for last photo album image.";
+        activityLabel.text = @"Refreshing cell count for last image.";
         
         double delayInSeconds = 0.1;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
