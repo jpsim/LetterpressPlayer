@@ -13,7 +13,10 @@
     UILabel *activityLabel;
     UITextView *tv;
     NSArray *masterWordList;
-    UIButton *refreshButton;
+    UIButton *analyzeButton;
+    UIButton *refreshCountButton;
+    NSArray *currentLetters;
+    NSArray *possibleWords;
 }
 
 @end

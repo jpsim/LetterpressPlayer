@@ -57,16 +57,24 @@ typedef void (^ImageActionBlock)(UIImage *image);
     tv.textColor = [UIColor whiteColor];
     tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
     
-    refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    refreshButton.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
-    [refreshButton setTitle:@"Analyze last photo album image" forState:UIControlStateNormal];
-    [refreshButton addTarget:self action:@selector(refreshResults) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:refreshButton];
+    analyzeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    analyzeButton.frame = CGRectMake(0, self.view.frame.size.height - 44, 160, 44);
+    [analyzeButton setTitle:@"Analyze last image" forState:UIControlStateNormal];
+    [analyzeButton addTarget:self action:@selector(analyze) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:analyzeButton];
+    
+    refreshCountButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    refreshCountButton.frame = CGRectMake(160, self.view.frame.size.height - 44, 160, 44);
+    [refreshCountButton setTitle:@"Refresh count" forState:UIControlStateNormal];
+    [refreshCountButton addTarget:self action:@selector(refreshCount) forControlEvents:UIControlEventTouchUpInside];
+    refreshCountButton.enabled = NO;
+    [self.view addSubview:refreshCountButton];
 }
 
-- (void)refreshResults {
+- (void)analyze {
     tv.hidden = TRUE;
-    refreshButton.hidden = TRUE;
+    analyzeButton.enabled = FALSE;
+    refreshCountButton.enabled = FALSE;
     
     [indicator startAnimating];
     activityLabel.text = @"Analyzing last photo album image.";
@@ -76,20 +84,60 @@ typedef void (^ImageActionBlock)(UIImage *image);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
             tv.hidden = FALSE;
-            refreshButton.hidden = FALSE;
+            analyzeButton.enabled = TRUE;
+            refreshCountButton.enabled = TRUE;
+            
             tv.text = [self finalWordsFromImage:image].description;
         } failure:^{
             [indicator stopAnimating];
             activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
+            analyzeButton.enabled = TRUE;
+            refreshCountButton.enabled = FALSE;
         }];
     });
 }
 
+- (void)refreshCount {
+    if (possibleWords.count) {
+        tv.hidden = TRUE;
+        analyzeButton.enabled = FALSE;
+        refreshCountButton.enabled = FALSE;
+        
+        [indicator startAnimating];
+        activityLabel.text = @"Refreshing cell count for last photo album image.";
+        
+        double delayInSeconds = 0.1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
+                tv.hidden = FALSE;
+                analyzeButton.enabled = TRUE;
+                refreshCountButton.enabled = TRUE;
+                
+                tv.text = [self updatedWordsFromImage:image].description;
+            } failure:^{
+                [indicator stopAnimating];
+                activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
+                analyzeButton.enabled = TRUE;
+                refreshCountButton.enabled = FALSE;
+            }];
+        });
+    } else {
+        [self analyze];
+    }
+}
+
 - (NSArray *)finalWordsFromImage:(UIImage *)image {
-    NSArray *letters = [self letterArrayFromImage:image];
-    NSArray *words = [self wordsForletterArray:letters];
+    currentLetters = [self letterArrayFromImage:image];
+    possibleWords = [self wordsForletterArray:currentLetters];
     NSArray *colors = [self colorArrayFromImage:image];
-    NSArray *wordsSortedByPoints = [self wordsSortedByScores:words letters:letters colors:colors];
+    NSArray *wordsSortedByPoints = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
+    return wordsSortedByPoints;
+}
+
+- (NSArray *)updatedWordsFromImage:(UIImage *)image {
+    NSArray *colors = [self colorArrayFromImage:image];
+    NSArray *wordsSortedByPoints = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
     return wordsSortedByPoints;
 }
 
