@@ -72,16 +72,22 @@ typedef void (^ImageActionBlock)(UIImage *image);
     
     [SVProgressHUD showWithStatus:update ? @"Refreshing counts for last image." : @"Analyzing last photo album image." maskType:SVProgressHUDMaskTypeGradient];
     
-    double delayInSeconds = 0.1;
+    double delayInSeconds = 0.001;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
-            [SVProgressHUD dismiss];
-            self.navigationItem.leftBarButtonItem.enabled = TRUE;
-            self.navigationItem.rightBarButtonItem.enabled = TRUE;
-            
-            finalWords = update ? [self updatedWordsFromImage:image] : [self finalWordsFromImage:image];
-            [self.tableView reloadData];
+            ActionBlock successBlock = ^{
+                [self.tableView reloadData];
+                
+                [SVProgressHUD dismiss];
+                self.navigationItem.leftBarButtonItem.enabled = TRUE;
+                self.navigationItem.rightBarButtonItem.enabled = TRUE;
+            };
+            if (update) {
+                [self updatedWordsFromImage:image success:successBlock];
+            } else {
+                [self finalWordsFromImage:image success:successBlock];
+            }
         } failure:^{
             [SVProgressHUD showErrorWithStatus:@"Couldn't find Letterpress screenshot"];
             self.navigationItem.rightBarButtonItem.enabled = FALSE;
@@ -110,18 +116,48 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 #pragma mark - Global
 
-- (NSArray *)finalWordsFromImage:(UIImage *)image {
-    currentLetters = [self letterArrayFromImage:image];
-    possibleWords = [self wordsForLetterArray:currentLetters];
-    NSArray *colors = [self colorArrayFromImage:image];
-    NSArray *wordsSortedByPoints = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
-    return wordsSortedByPoints;
+- (void)finalWordsFromImage:(UIImage *)image success:(ActionBlock)success {
+    [SVProgressHUD showWithStatus:@"Extracting Colors" maskType:SVProgressHUDMaskTypeGradient];
+    double delayInSeconds = 0.001;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        NSArray *colors = [self colorArrayFromImage:image];
+        [SVProgressHUD showWithStatus:@"Extracting Letters" maskType:SVProgressHUDMaskTypeGradient];
+        double delayInSeconds = 0.001;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            currentLetters = [self letterArrayFromImage:image];
+            [SVProgressHUD showWithStatus:@"Generating Words" maskType:SVProgressHUDMaskTypeGradient];
+            double delayInSeconds = 0.001;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                possibleWords = [self wordsForLetterArray:currentLetters];
+                [SVProgressHUD showWithStatus:@"Sorting Words" maskType:SVProgressHUDMaskTypeGradient];
+                double delayInSeconds = 0.001;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    finalWords = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
+                    if (success) success();
+                });
+            });
+        });
+    });
 }
 
-- (NSArray *)updatedWordsFromImage:(UIImage *)image {
-    NSArray *colors = [self colorArrayFromImage:image];
-    NSArray *wordsSortedByPoints = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
-    return wordsSortedByPoints;
+- (void)updatedWordsFromImage:(UIImage *)image success:(ActionBlock)success {
+    [SVProgressHUD showWithStatus:@"Extracting Colors" maskType:SVProgressHUDMaskTypeGradient];
+    double delayInSeconds = 0.01;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        NSArray *colors = [self colorArrayFromImage:image];
+        [SVProgressHUD showWithStatus:@"Sorting Words" maskType:SVProgressHUDMaskTypeGradient];
+        double delayInSeconds = 0.01;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            finalWords = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
+            if (success) success();
+        });
+    });
 }
 
 #pragma mark - Screenshot Parsing
