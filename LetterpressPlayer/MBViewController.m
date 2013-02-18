@@ -10,6 +10,7 @@
 #import "UIImage+LPAdditions.h"
 #import "UIColor+LPAdditions.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "SVProgressHUD.h"
 
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
@@ -47,39 +48,13 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (void)setupUI {
+    finalWords = @[];
     masterWordList = [self masterWordList];
     
-    self.view.backgroundColor = [UIColor blackColor];
-    
-    indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    indicator.center = self.view.center;
-    [self.view addSubview:indicator];
-    
-    activityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, indicator.center.y + 40, 320, 40)];
-    activityLabel.backgroundColor = [UIColor blackColor];
-    activityLabel.textColor = [UIColor whiteColor];
-    activityLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:activityLabel];
-    
-    tv = [[UITextView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 44)];
-    [self.view addSubview:tv];
-    tv.editable = NO;
-    tv.backgroundColor = [UIColor blackColor];
-    tv.textColor = [UIColor whiteColor];
-    tv.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-    
-    analyzeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    analyzeButton.frame = CGRectMake(0, self.view.frame.size.height - 44, 160, 44);
-    [analyzeButton setTitle:@"Analyze last image" forState:UIControlStateNormal];
-    [analyzeButton addTarget:self action:@selector(analyze) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:analyzeButton];
-    
-    refreshCountButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    refreshCountButton.frame = CGRectMake(160, self.view.frame.size.height - 44, 160, 44);
-    [refreshCountButton setTitle:@"Refresh count" forState:UIControlStateNormal];
-    [refreshCountButton addTarget:self action:@selector(refreshCount) forControlEvents:UIControlEventTouchUpInside];
-    refreshCountButton.enabled = NO;
-    [self.view addSubview:refreshCountButton];
+    self.title = @"LetterCheater";
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Analyze" style:UIBarButtonItemStylePlain target:self action:@selector(analyze)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(refreshCount)];
+    self.navigationItem.rightBarButtonItem.enabled = FALSE;
 }
 
 #pragma mark - Actions
@@ -95,29 +70,42 @@ typedef void (^ImageActionBlock)(UIImage *image);
 - (void)refreshWordList:(BOOL)update {
     if (!possibleWords.count) update = NO;
     
-    tv.hidden = TRUE;
-    analyzeButton.enabled = FALSE;
-    refreshCountButton.enabled = FALSE;
-    
-    [indicator startAnimating];
-    activityLabel.text = update ? @"Refreshing counts for last image." : @"Analyzing last photo album image.";
+    [SVProgressHUD showWithStatus:update ? @"Refreshing counts for last image." : @"Analyzing last photo album image." maskType:SVProgressHUDMaskTypeGradient];
     
     double delayInSeconds = 0.1;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
-            tv.hidden = FALSE;
-            analyzeButton.enabled = TRUE;
-            refreshCountButton.enabled = TRUE;
+            [SVProgressHUD dismiss];
+            self.navigationItem.leftBarButtonItem.enabled = TRUE;
+            self.navigationItem.rightBarButtonItem.enabled = TRUE;
             
-            tv.text = update ? [self updatedWordsFromImage:image].description : [self finalWordsFromImage:image].description;
+            finalWords = update ? [self updatedWordsFromImage:image] : [self finalWordsFromImage:image];
+            [self.tableView reloadData];
         } failure:^{
-            [indicator stopAnimating];
-            activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
-            analyzeButton.enabled = TRUE;
-            refreshCountButton.enabled = FALSE;
+            [SVProgressHUD showErrorWithStatus:@"Couldn't find Letterpress screenshot"];
+            self.navigationItem.rightBarButtonItem.enabled = FALSE;
         }];
     });
+}
+
+#pragma mark - Table
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return finalWords.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
+    cell.textLabel.text = [finalWords objectAtIndex:indexPath.row];
+    
+    return cell;
 }
 
 #pragma mark - Global

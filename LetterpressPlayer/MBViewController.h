@@ -8,15 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MBViewController : UIViewController {
-    UIActivityIndicatorView *indicator;
-    UILabel *activityLabel;
-    UITextView *tv;
+@interface MBViewController : UITableViewController {
     NSArray *masterWordList;
-    UIButton *analyzeButton;
-    UIButton *refreshCountButton;
     NSArray *currentLetters;
     NSArray *possibleWords;
+    NSArray *finalWords;
 }
 
 @end

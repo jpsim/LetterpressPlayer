@@ -21,6 +21,10 @@
 		E849E1BB16AFEECF009E2878 /* l1.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1AF16AFEECF009E2878 /* l1.png */; };
 		E849E1BE16B00308009E2878 /* l13.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1BD16B00308009E2878 /* l13.png */; };
 		E8664E7816D2C3E400334FCF /* UIImage+LPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8664E7716D2C3E400334FCF /* UIImage+LPAdditions.m */; };
+		E8664E7B16D2D0B700334FCF /* MBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8664E7A16D2D0B700334FCF /* MBViewController.m */; };
+		E8BC2B2916D2D40E00DD289E /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E8BC2B2616D2D40E00DD289E /* SVProgressHUD.bundle */; };
+		E8BC2B2A16D2D40E00DD289E /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E8BC2B2816D2D40E00DD289E /* SVProgressHUD.m */; };
+		E8BC2B2C16D2D41F00DD289E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BC2B2B16D2D41F00DD289E /* QuartzCore.framework */; };
 		E8BD364D16B07BF900BCEF69 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BD364C16B07BF900BCEF69 /* AssetsLibrary.framework */; };
 		E8E3578316AFACD0007B3B50 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3578216AFACD0007B3B50 /* UIKit.framework */; };
 		E8E3578516AFACD0007B3B50 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3578416AFACD0007B3B50 /* Foundation.framework */; };
@@ -31,13 +35,13 @@
 		E8E3579516AFACD0007B3B50 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E3579416AFACD0007B3B50 /* Default.png */; };
 		E8E3579716AFACD0007B3B50 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E3579616AFACD0007B3B50 /* Default@2x.png */; };
 		E8E3579916AFACD0007B3B50 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E3579816AFACD0007B3B50 /* Default-568h@2x.png */; };
-		E8E3579C16AFACD0007B3B50 /* MBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E3579B16AFACD0007B3B50 /* MBViewController.m */; };
 		E8E357A916AFAD21007B3B50 /* en_longest_to_shortest.txt in Resources */ = {isa = PBXBuildFile; fileRef = E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */; };
 		E8E357AB16AFADDA007B3B50 /* l0.png in Resources */ = {isa = PBXBuildFile; fileRef = E8E357AA16AFADDA007B3B50 /* l0.png */; };
 		E8E357AE16AFAF48007B3B50 /* UIColor+LPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357AD16AFAF48007B3B50 /* UIColor+LPAdditions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5404C0A94CFD4830821D537A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E849E1A416AFEECF009E2878 /* l12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l12.png; sourceTree = "<group>"; };
 		E849E1A516AFEECF009E2878 /* l11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l11.png; sourceTree = "<group>"; };
 		E849E1A616AFEECF009E2878 /* l10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l10.png; sourceTree = "<group>"; };
@@ -53,22 +57,26 @@
 		E849E1BD16B00308009E2878 /* l13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l13.png; sourceTree = "<group>"; };
 		E8664E7616D2C3E400334FCF /* UIImage+LPAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+LPAdditions.h"; sourceTree = "<group>"; };
 		E8664E7716D2C3E400334FCF /* UIImage+LPAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+LPAdditions.m"; sourceTree = "<group>"; };
+		E8664E7916D2D0B700334FCF /* MBViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBViewController.h; sourceTree = "<group>"; };
+		E8664E7A16D2D0B700334FCF /* MBViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBViewController.m; sourceTree = "<group>"; };
+		E8BC2B2616D2D40E00DD289E /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		E8BC2B2716D2D40E00DD289E /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		E8BC2B2816D2D40E00DD289E /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
+		E8BC2B2B16D2D41F00DD289E /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E8BD364C16B07BF900BCEF69 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		E8E3577E16AFACD0007B3B50 /* LetterpressPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LetterpressPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8E3577E16AFACD0007B3B50 /* LetterCheater.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LetterCheater.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8E3578216AFACD0007B3B50 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		E8E3578416AFACD0007B3B50 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E8E3578616AFACD0007B3B50 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		E8E3578A16AFACD0007B3B50 /* LetterpressPlayer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LetterpressPlayer-Info.plist"; sourceTree = "<group>"; };
+		E8E3578A16AFACD0007B3B50 /* LetterCheater-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LetterCheater-Info.plist"; sourceTree = "<group>"; };
 		E8E3578C16AFACD0007B3B50 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E8E3578E16AFACD0007B3B50 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		E8E3579016AFACD0007B3B50 /* LetterpressPlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LetterpressPlayer-Prefix.pch"; sourceTree = "<group>"; };
+		E8E3579016AFACD0007B3B50 /* LetterCheater-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LetterCheater-Prefix.pch"; sourceTree = "<group>"; };
 		E8E3579116AFACD0007B3B50 /* MBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBAppDelegate.h; sourceTree = "<group>"; };
 		E8E3579216AFACD0007B3B50 /* MBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBAppDelegate.m; sourceTree = "<group>"; };
 		E8E3579416AFACD0007B3B50 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		E8E3579616AFACD0007B3B50 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		E8E3579816AFACD0007B3B50 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		E8E3579A16AFACD0007B3B50 /* MBViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MBViewController.h; sourceTree = "<group>"; };
-		E8E3579B16AFACD0007B3B50 /* MBViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBViewController.m; sourceTree = "<group>"; };
 		E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en_longest_to_shortest.txt; sourceTree = "<group>"; };
 		E8E357AA16AFADDA007B3B50 /* l0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l0.png; sourceTree = "<group>"; };
 		E8E357AC16AFAF48007B3B50 /* UIColor+LPAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+LPAdditions.h"; sourceTree = "<group>"; };
@@ -80,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8BC2B2C16D2D41F00DD289E /* QuartzCore.framework in Frameworks */,
 				E8BD364D16B07BF900BCEF69 /* AssetsLibrary.framework in Frameworks */,
 				E8E3578316AFACD0007B3B50 /* UIKit.framework in Frameworks */,
 				E8E3578516AFACD0007B3B50 /* Foundation.framework in Frameworks */,
@@ -111,10 +120,20 @@
 			name = "Test Data";
 			sourceTree = "<group>";
 		};
+		E8BC2B2516D2D40E00DD289E /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				E8BC2B2616D2D40E00DD289E /* SVProgressHUD.bundle */,
+				E8BC2B2716D2D40E00DD289E /* SVProgressHUD.h */,
+				E8BC2B2816D2D40E00DD289E /* SVProgressHUD.m */,
+			);
+			path = SVProgressHUD;
+			sourceTree = "<group>";
+		};
 		E8E3577316AFACD0007B3B50 = {
 			isa = PBXGroup;
 			children = (
-				E8E3578816AFACD0007B3B50 /* LetterpressPlayer */,
+				E8E3578816AFACD0007B3B50 /* LetterCheater */,
 				E8E3578116AFACD0007B3B50 /* Frameworks */,
 				E8E3577F16AFACD0007B3B50 /* Products */,
 			);
@@ -123,7 +142,7 @@
 		E8E3577F16AFACD0007B3B50 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E8E3577E16AFACD0007B3B50 /* LetterpressPlayer.app */,
+				E8E3577E16AFACD0007B3B50 /* LetterCheater.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -131,39 +150,43 @@
 		E8E3578116AFACD0007B3B50 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E8BC2B2B16D2D41F00DD289E /* QuartzCore.framework */,
 				E8BD364C16B07BF900BCEF69 /* AssetsLibrary.framework */,
 				E8E3578216AFACD0007B3B50 /* UIKit.framework */,
 				E8E3578416AFACD0007B3B50 /* Foundation.framework */,
 				E8E3578616AFACD0007B3B50 /* CoreGraphics.framework */,
+				5404C0A94CFD4830821D537A /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E8E3578816AFACD0007B3B50 /* LetterpressPlayer */ = {
+		E8E3578816AFACD0007B3B50 /* LetterCheater */ = {
 			isa = PBXGroup;
 			children = (
+				E8BC2B2516D2D40E00DD289E /* SVProgressHUD */,
 				E849E1BC16AFEED4009E2878 /* Test Data */,
 				E8E357A816AFAD21007B3B50 /* en_longest_to_shortest.txt */,
 				E8E3579116AFACD0007B3B50 /* MBAppDelegate.h */,
 				E8E3579216AFACD0007B3B50 /* MBAppDelegate.m */,
-				E8E3579A16AFACD0007B3B50 /* MBViewController.h */,
-				E8E3579B16AFACD0007B3B50 /* MBViewController.m */,
+				E8664E7916D2D0B700334FCF /* MBViewController.h */,
+				E8664E7A16D2D0B700334FCF /* MBViewController.m */,
 				E8E3578916AFACD0007B3B50 /* Supporting Files */,
 				E8E357AC16AFAF48007B3B50 /* UIColor+LPAdditions.h */,
 				E8E357AD16AFAF48007B3B50 /* UIColor+LPAdditions.m */,
 				E8664E7616D2C3E400334FCF /* UIImage+LPAdditions.h */,
 				E8664E7716D2C3E400334FCF /* UIImage+LPAdditions.m */,
 			);
+			name = LetterCheater;
 			path = LetterpressPlayer;
 			sourceTree = "<group>";
 		};
 		E8E3578916AFACD0007B3B50 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E8E3578A16AFACD0007B3B50 /* LetterpressPlayer-Info.plist */,
+				E8E3578A16AFACD0007B3B50 /* LetterCheater-Info.plist */,
 				E8E3578B16AFACD0007B3B50 /* InfoPlist.strings */,
 				E8E3578E16AFACD0007B3B50 /* main.m */,
-				E8E3579016AFACD0007B3B50 /* LetterpressPlayer-Prefix.pch */,
+				E8E3579016AFACD0007B3B50 /* LetterCheater-Prefix.pch */,
 				E8E3579416AFACD0007B3B50 /* Default.png */,
 				E8E3579616AFACD0007B3B50 /* Default@2x.png */,
 				E8E3579816AFACD0007B3B50 /* Default-568h@2x.png */,
@@ -174,9 +197,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E8E3577D16AFACD0007B3B50 /* LetterpressPlayer */ = {
+		E8E3577D16AFACD0007B3B50 /* LetterCheater */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E8E357A216AFACD0007B3B50 /* Build configuration list for PBXNativeTarget "LetterpressPlayer" */;
+			buildConfigurationList = E8E357A216AFACD0007B3B50 /* Build configuration list for PBXNativeTarget "LetterCheater" */;
 			buildPhases = (
 				E8E3577A16AFACD0007B3B50 /* Sources */,
 				E8E3577B16AFACD0007B3B50 /* Frameworks */,
@@ -186,9 +209,9 @@
 			);
 			dependencies = (
 			);
-			name = LetterpressPlayer;
+			name = LetterCheater;
 			productName = LetterpressPlayer;
-			productReference = E8E3577E16AFACD0007B3B50 /* LetterpressPlayer.app */;
+			productReference = E8E3577E16AFACD0007B3B50 /* LetterCheater.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -201,7 +224,7 @@
 				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Magnetic Bear Studios";
 			};
-			buildConfigurationList = E8E3577816AFACD0007B3B50 /* Build configuration list for PBXProject "LetterpressPlayer" */;
+			buildConfigurationList = E8E3577816AFACD0007B3B50 /* Build configuration list for PBXProject "LetterCheater" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -213,7 +236,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E8E3577D16AFACD0007B3B50 /* LetterpressPlayer */,
+				E8E3577D16AFACD0007B3B50 /* LetterCheater */,
 			);
 		};
 /* End PBXProject section */
@@ -242,6 +265,7 @@
 				E849E1BA16AFEECF009E2878 /* l2.png in Resources */,
 				E849E1BB16AFEECF009E2878 /* l1.png in Resources */,
 				E849E1BE16B00308009E2878 /* l13.png in Resources */,
+				E8BC2B2916D2D40E00DD289E /* SVProgressHUD.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -254,9 +278,10 @@
 			files = (
 				E8E3578F16AFACD0007B3B50 /* main.m in Sources */,
 				E8E3579316AFACD0007B3B50 /* MBAppDelegate.m in Sources */,
-				E8E3579C16AFACD0007B3B50 /* MBViewController.m in Sources */,
 				E8E357AE16AFAF48007B3B50 /* UIColor+LPAdditions.m in Sources */,
 				E8664E7816D2C3E400334FCF /* UIImage+LPAdditions.m in Sources */,
+				E8664E7B16D2D0B700334FCF /* MBViewController.m in Sources */,
+				E8BC2B2A16D2D40E00DD289E /* SVProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,9 +355,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Apps MBS (LH37M323M9)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterpressPlayer-Prefix.pch";
-				INFOPLIST_FILE = "LetterpressPlayer/LetterpressPlayer-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterCheater-Prefix.pch";
+				INFOPLIST_FILE = "LetterpressPlayer/LetterCheater-Info.plist";
+				PRODUCT_NAME = LetterCheater;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75F388CE-F678-4FC1-ACD9-DAB18FEE475F";
 				WRAPPER_EXTENSION = app;
@@ -344,9 +369,9 @@
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Magnetic Bear Studios Inc.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterpressPlayer-Prefix.pch";
-				INFOPLIST_FILE = "LetterpressPlayer/LetterpressPlayer-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterCheater-Prefix.pch";
+				INFOPLIST_FILE = "LetterpressPlayer/LetterCheater-Info.plist";
+				PRODUCT_NAME = LetterCheater;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "12FC698E-B47B-4700-9A08-1A7E9AA734B3";
 				WRAPPER_EXTENSION = app;
 			};
@@ -355,7 +380,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E8E3577816AFACD0007B3B50 /* Build configuration list for PBXProject "LetterpressPlayer" */ = {
+		E8E3577816AFACD0007B3B50 /* Build configuration list for PBXProject "LetterCheater" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E8E357A016AFACD0007B3B50 /* Debug */,
@@ -364,7 +389,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E8E357A216AFACD0007B3B50 /* Build configuration list for PBXNativeTarget "LetterpressPlayer" */ = {
+		E8E357A216AFACD0007B3B50 /* Build configuration list for PBXNativeTarget "LetterCheater" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E8E357A316AFACD0007B3B50 /* Debug */,
