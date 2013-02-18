@@ -28,6 +28,7 @@ typedef enum {
 // Color Extraction
 - (UIColor *)colorAtPoint:(CGPoint)point;
 - (NSArray *)colorsAtPoints:(NSArray *)points;
+- (NSArray *)colorComponentsAtPoints:(NSArray *)points;
 
 // Resizing
 - (UIImage *)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode;

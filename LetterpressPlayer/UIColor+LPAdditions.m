@@ -20,8 +20,7 @@
         CGFloat red = components[0];
         CGFloat green = components[1];
         CGFloat blue = components[2];
-        CGFloat alpha = components[3];
-        return @[@(red), @(green), @(blue), @(alpha)];
+        return @[@(red), @(green), @(blue)];
     }
     
     return nil;

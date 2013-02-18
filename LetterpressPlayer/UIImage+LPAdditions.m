@@ -57,6 +57,44 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
     return results;
 }
 
+- (NSArray *)colorComponentsAtPoints:(NSArray *)points {
+    
+    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:points.count];
+    
+    // First get the image into your data buffer
+    CGImageRef imageRef = [self CGImage];
+    NSUInteger width = CGImageGetWidth(imageRef);
+    NSUInteger height = CGImageGetHeight(imageRef);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    unsigned char *rawData = malloc(height * width * 4);
+    NSUInteger bytesPerPixel = 4;
+    NSUInteger bytesPerRow = bytesPerPixel * width;
+    NSUInteger bitsPerComponent = 8;
+    CGContextRef context = CGBitmapContextCreate(rawData, width, height,
+                                                 bitsPerComponent, bytesPerRow, colorSpace,
+                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+    CGContextRelease(context);
+    
+    [points enumerateObjectsUsingBlock:^(NSValue *pointValue, NSUInteger idx, BOOL *stop) {
+        // Now your rawData contains the image data in the RGBA8888 pixel format.
+        CGPoint point = pointValue.CGPointValue;
+        int byteIndex = (bytesPerRow * point.y) + point.x * bytesPerPixel;
+        
+        CGFloat red   = (rawData[byteIndex]     * 1.0) / 255.0;
+        CGFloat green = (rawData[byteIndex + 1] * 1.0) / 255.0;
+        CGFloat blue  = (rawData[byteIndex + 2] * 1.0) / 255.0;
+        
+        [results addObject:@[@(red), @(green), @(blue)]];
+    }];
+    
+    free(rawData);
+    
+    return results;
+}
+
 #pragma mark - Resizing
 
 - (UIImage *)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode {
