@@ -1,17 +1,17 @@
 //
-//  UIImage+Resize.h
-//  NYXImagesKit
+//  UIImage+LPAdditions.h
+//  LetterpressPlayer
 //
-//  Created by @Nyx0uf on 02/05/11.
-//  Copyright 2012 Nyx0uf. All rights reserved.
-//  www.cocoaintheshell.com
+//  Created by Jean-Pierre Simard on 2/18/13.
+//  Copyright (c) 2013 Magnetic Bear Studios. All rights reserved.
 //
+
+#import <UIKit/UIKit.h>
 
 /* Number of components for an ARGB pixel (Alpha / Red / Green / Blue) = 4 */
 #define kNyxNumberOfComponentsPerARBGPixel 4
 
-typedef enum
-{
+typedef enum {
     NYXCropModeTopLeft,
     NYXCropModeTopCenter,
     NYXCropModeTopRight,
@@ -23,16 +23,17 @@ typedef enum
     NYXCropModeCenter
 } NYXCropMode;
 
+@interface UIImage (LPAdditions)
 
-@interface UIImage (NYX_Resizing)
+- (UIColor *)colorAtPoint:(CGPoint)point;
 
--(UIImage*)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode;
+- (UIImage *)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode;
 
--(UIImage*)cropToSize:(CGSize)newSize;
+- (UIImage *)cropToSize:(CGSize)newSize;
 
--(UIImage*)scaleByFactor:(float)scaleFactor;
+- (UIImage *)scaleByFactor:(float)scaleFactor;
 
--(UIImage*)scaleToFitSize:(CGSize)newSize;
+- (UIImage *)scaleToFitSize:(CGSize)newSize;
 
 CGContextRef NYXCreateARGBBitmapContext(const size_t width, const size_t height, const size_t bytesPerRow);
 

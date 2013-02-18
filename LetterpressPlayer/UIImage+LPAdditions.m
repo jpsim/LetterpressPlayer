@@ -1,22 +1,58 @@
 //
-//  UIImage+Resize.m
-//  NYXImagesKit
+//  UIImage+LPAdditions.m
+//  LetterpressPlayer
 //
-//  Created by @Nyx0uf on 02/05/11.
-//  Copyright 2012 Nyx0uf. All rights reserved.
-//  www.cocoaintheshell.com
+//  Created by Jean-Pierre Simard on 2/18/13.
+//  Copyright (c) 2013 Magnetic Bear Studios. All rights reserved.
 //
 
-
-#import "UIImage+Resizing.h"
+#import "UIImage+LPAdditions.h"
 
 static CGColorSpaceRef __rgbColorSpace = NULL;
 
+@implementation UIImage (LPAdditions)
 
-@implementation UIImage (NYX_Resizing)
+#pragma mark - Color at point
 
--(UIImage*)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode
-{
+- (UIColor *)colorAtPoint:(CGPoint)point {
+    
+    UIColor *result = nil;
+    
+    // First get the image into your data buffer
+    CGImageRef imageRef = [self CGImage];
+    NSUInteger width = CGImageGetWidth(imageRef);
+    NSUInteger height = CGImageGetHeight(imageRef);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    unsigned char *rawData = malloc(height * width * 4);
+    NSUInteger bytesPerPixel = 4;
+    NSUInteger bytesPerRow = bytesPerPixel * width;
+    NSUInteger bitsPerComponent = 8;
+    CGContextRef context = CGBitmapContextCreate(rawData, width, height,
+                                                 bitsPerComponent, bytesPerRow, colorSpace,
+                                                 kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    CGColorSpaceRelease(colorSpace);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+    CGContextRelease(context);
+    
+    // Now your rawData contains the image data in the RGBA8888 pixel format.
+    int byteIndex = (bytesPerRow * point.y) + point.x * bytesPerPixel;
+    
+    CGFloat red   = (rawData[byteIndex]     * 1.0) / 255.0;
+    CGFloat green = (rawData[byteIndex + 1] * 1.0) / 255.0;
+    CGFloat blue  = (rawData[byteIndex + 2] * 1.0) / 255.0;
+    CGFloat alpha = (rawData[byteIndex + 3] * 1.0) / 255.0;
+    
+    result =  [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+    
+    free(rawData);
+    
+    return result;
+}
+
+#pragma mark - Resizing
+
+- (UIImage *)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode {
     const CGSize size = self.size;
     CGFloat x, y;
     switch (cropMode)
@@ -74,13 +110,11 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
 }
 
 /* Convenience method to crop the image from the top left corner */
--(UIImage*)cropToSize:(CGSize)newSize
-{
+- (UIImage *)cropToSize:(CGSize)newSize {
     return [self cropToSize:newSize usingMode:NYXCropModeTopLeft];
 }
 
--(UIImage*)scaleByFactor:(float)scaleFactor
-{
+- (UIImage *)scaleByFactor:(float)scaleFactor {
     const size_t originalWidth = (size_t)(self.size.width * self.scale * scaleFactor);
     const size_t originalHeight = (size_t)(self.size.height * self.scale * scaleFactor);
     /// Number of bytes per row, each pixel in the bitmap will be represented by 4 bytes (ARGB), 8 bits of alpha/red/green/blue
@@ -127,8 +161,7 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
     return scaled;
 }
 
--(UIImage*)scaleToFitSize:(CGSize)newSize
-{
+- (UIImage *)scaleToFitSize:(CGSize)newSize {
     const size_t originalWidth = (size_t)(self.size.width * self.scale);
     const size_t originalHeight = (size_t)(self.size.height * self.scale);
     
@@ -181,11 +214,10 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
     CGImageRelease(scaledImageRef);
     CGContextRelease(bmContext);
     
-    return scaled;	
+    return scaled;
 }
 
-CGContextRef NYXCreateARGBBitmapContext(const size_t width, const size_t height, const size_t bytesPerRow)
-{
+CGContextRef NYXCreateARGBBitmapContext(const size_t width, const size_t height, const size_t bytesPerRow) {
     /// Use the generic RGB color space
     /// We avoid the NULL check because CGColorSpaceRelease() NULL check the value anyway, and worst case scenario = fail to create context
     /// Create the bitmap context, we want pre-multiplied ARGB, 8-bits per component
@@ -194,8 +226,7 @@ CGContextRef NYXCreateARGBBitmapContext(const size_t width, const size_t height,
     return bmContext;
 }
 
-CGColorSpaceRef NYXGetRGBColorSpace(void)
-{
+CGColorSpaceRef NYXGetRGBColorSpace(void) {
     if (!__rgbColorSpace)
     {
         __rgbColorSpace = CGColorSpaceCreateDeviceRGB();

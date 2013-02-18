@@ -1,5 +1,5 @@
 //
-//  UIColor+ComponentAdditions.h
+//  UIColor+LPAdditions.h
 //  LetterpressPlayer
 //
 //  Created by Jean-Pierre Simard on 1/23/13.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIColor (ComponentAdditions)
+@interface UIColor (LPAdditions)
 
 - (NSArray *)components;
 

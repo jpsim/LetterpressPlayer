@@ -6,36 +6,47 @@
 //  Copyright (c) 2013 Magnetic Bear Studios. All rights reserved.
 //
 
+#import "MBViewController.h"
+#import "UIImage+LPAdditions.h"
+#import "UIColor+LPAdditions.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
 #define kRunTests           FALSE
 #define kSortStrategyKill   TRUE
 
-#import "MBViewController.h"
-#import "UIImage+PixelAdditions.h"
-#import "UIColor+ComponentAdditions.h"
-#import "LetterpressLetter.h"
-#import "UIImage+Resizing.h"
-#import <AssetsLibrary/AssetsLibrary.h>
+typedef enum {
+    kLetterTypeDarkRed,
+    kLetterTypeLightRed,
+    kLetterTypeGray,
+    kLetterTypeLightBlue,
+    kLetterTypeDarkBlue,
+    kLetterTypeUnknown
+} kLetterType;
 
 typedef void (^ActionBlock)();
 typedef void (^ImageActionBlock)(UIImage *image);
 
 @implementation MBViewController
 
+#pragma mark - UI
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     if (kGenerateArrays) {
-        [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
-        NSLog(@"----------- the only one left is 'z', look for 'o'");
-        [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
+        [self generateArrays];
         return;
     } else if (kRunTests) {
         [self runTests];
         return;
+    } else {
+        [self setupUI];
     }
-    
+}
+
+- (void)setupUI {
     masterWordList = [self masterWordList];
     
     self.view.backgroundColor = [UIColor blackColor];
@@ -127,6 +138,8 @@ typedef void (^ImageActionBlock)(UIImage *image);
     }
 }
 
+#pragma mark - Global
+
 - (NSArray *)finalWordsFromImage:(UIImage *)image {
     currentLetters = [self letterArrayFromImage:image];
     possibleWords = [self wordsForletterArray:currentLetters];
@@ -141,234 +154,30 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return wordsSortedByPoints;
 }
 
-- (NSArray *)colorArrayFromImage:(UIImage *)image {
-    NSMutableArray *colorArray = @[].mutableCopy;
-    NSArray *squareImages = [self imageArrayFromImage:image];
-    for (UIImage *squareImage in squareImages) {
-        NSInteger type = [self letterTypeForColor:[squareImage colorAtPoint:CGPointMake(10, 10)]];
-        [colorArray addObject:@(type)];
-    }
-    
-    return colorArray;
-}
+#pragma mark - Screenshot Parsing
 
-- (kLetterType)letterTypeForColor:(UIColor *)color {
-    NSArray *components = [color components];
+- (void)getLatestImageFromAlbumWithSuccess:(ImageActionBlock)success failure:(ActionBlock)failure {
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     
-    NSArray *lightBlue = @[@(0.4705882), @(0.7843137), @(0.9607843), @(1)];
-    NSArray *darkBlue = @[@(0), @(0.6352941), @(1), @(1)];
-    NSArray *gray1 = @[@(0.9019608), @(0.8980392), @(0.8862745), @(1)];
-    NSArray *gray2 = @[@(0.9137255), @(0.9098039), @(0.8980392), @(1)];
-    NSArray *lightRed = @[@(0.9686275), @(0.6), @(0.5529412), @(1)];
-    NSArray *darkRed = @[@(1), @(0.2627451), @(0.1843137), @(1)];
-    
-    __block CGFloat lightBlueDeviation = 0;
-    __block CGFloat darkBlueDeviation = 0;
-    __block CGFloat gray1Deviation = 0;
-    __block CGFloat gray2Deviation = 0;
-    __block CGFloat lightRedDeviation = 0;
-    __block CGFloat darkRedDeviation = 0;
-    
-    [components enumerateObjectsUsingBlock:^(NSNumber *component, NSUInteger idx, BOOL *stop) {
-        lightBlueDeviation += fabsf(component.floatValue - [[lightBlue objectAtIndex:idx] floatValue]);
-        darkBlueDeviation += fabsf(component.floatValue - [[darkBlue objectAtIndex:idx] floatValue]);
-        gray1Deviation += fabsf(component.floatValue - [[gray1 objectAtIndex:idx] floatValue]);
-        gray2Deviation += fabsf(component.floatValue - [[gray2 objectAtIndex:idx] floatValue]);
-        lightRedDeviation += fabsf(component.floatValue - [[lightRed objectAtIndex:idx] floatValue]);
-        darkRedDeviation += fabsf(component.floatValue - [[darkRed objectAtIndex:idx] floatValue]);
-    }];
-    
-    if (lightBlueDeviation < darkBlueDeviation
-        && lightBlueDeviation < gray1Deviation
-        && lightBlueDeviation < gray2Deviation
-        && lightBlueDeviation < lightRedDeviation
-        && lightBlueDeviation < darkRedDeviation) {
-        return kLetterTypeLightBlue;
-    }
-    
-    if (darkBlueDeviation < gray1Deviation
-        && darkBlueDeviation < gray2Deviation
-        && darkBlueDeviation < lightRedDeviation
-        && darkBlueDeviation < darkRedDeviation) {
-        return kLetterTypeDarkBlue;
-    }
-    
-    if (gray1Deviation < gray2Deviation
-        && gray1Deviation < lightRedDeviation
-        && gray1Deviation < darkRedDeviation) {
-        return kLetterTypeGray;
-    }
-    
-    if (gray2Deviation < lightRedDeviation
-        && gray2Deviation < darkRedDeviation) {
-        return kLetterTypeGray;
-    }
-    
-    if (lightRedDeviation < darkRedDeviation) {
-        return kLetterTypeLightRed;
-    }
-    
-    if (darkRedDeviation) {
-        return kLetterTypeDarkRed;
-    }
-    
-    return kLetterTypeUnknown;
-}
-
-- (NSArray *)letterArrayFromImage:(UIImage *)screenshot {
-    NSMutableArray *letters = @[].mutableCopy;
-    NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
-    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
-        NSInteger grayHorizontal1 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
-        }
+    // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
+    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
         
-        NSInteger grayHorizontal2 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
-        }
+        // Within the group enumeration block, filter to enumerate just photos.
+        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
         
-        NSInteger grayHorizontal3 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
-        }
-        
-        NSInteger grayVertical1 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
-        }
-        
-        NSInteger grayVertical2 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
-        }
-        
-        NSInteger grayVertical3 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
-        }
-        
-        NSInteger qPoint = 0;
-        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(88, 88)] components] andReference:textColorArray] < 1) {
-            qPoint = 1;
-        }
-        
-        if (kGenerateArrays) {
-            NSLog(@"NSArray *%@ = @[@%d, @%d, @%d, @%d, @%d, @%d, @%d];", [@"abcdefghijklmnopqrstuvwxyz" substringWithRange:NSMakeRange(idx, 1)], grayHorizontal1, grayHorizontal2, grayHorizontal3, grayVertical1, grayVertical2, grayVertical3, qPoint);
-        } else {
-            NSString *letter = [self stringForCellWithTextColorArray:@[@(grayHorizontal1), @(grayHorizontal2), @(grayHorizontal3), @(grayVertical1), @(grayVertical2), @(grayVertical3), @(qPoint)]];
-            [letters addObject:letter];
-        }
-    }];
-    
-    return letters;
-}
-
-- (NSArray *)masterWordList {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"en_longest_to_shortest" ofType:@"txt"];
-    NSString *wordlist = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
-    NSArray *words = [wordlist componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    return words;
-}
-
-- (NSArray *)wordsForletterArray:(NSArray *)letterArray {
-    NSMutableString *letterArrayString = @"".mutableCopy;
-    for (NSString *letter in letterArray) {
-        [letterArrayString appendString:letter.lowercaseString];
-    }
-    NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
-    
-    NSMutableArray *matchedWords = @[].mutableCopy;
-    for (NSString *word in masterWordList) {
-        if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
-            NSMutableArray *charactersLeft = letterArray.mutableCopy;
-            for (NSString *c in [self charactersFromString:word]) {
-                NSString *uppercaseLetter = c.uppercaseString;
-                NSUInteger indexOfLetter = [charactersLeft indexOfObject:uppercaseLetter];
-                if (indexOfLetter != NSNotFound) {
-                    [charactersLeft removeObjectAtIndex:indexOfLetter];
-                } else {
-                    break;
-                }
+        // Chooses the photo at the last index
+        [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:([group numberOfAssets] - 1)] options:0 usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+            
+            // The end of the enumeration is signaled by asset == nil.
+            if (alAsset) {
+                ALAssetRepresentation *representation = [alAsset defaultRepresentation];
+                UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
+                if (success) success(latestPhoto);
             }
-            if (charactersLeft.count == letterArray.count - word.length) {
-                [matchedWords addObject:word];
-            }
-        }
-    }
-    return matchedWords;
-}
-
-- (NSArray *)wordsSortedByScores:(NSArray *)words letters:(NSArray *)letters colors:(NSArray *)colors {
-    NSMutableArray *wordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
-    NSMutableArray *actualWordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
-    NSMutableArray *letterScores = [[NSMutableArray alloc] initWithCapacity:colors.count];
-    NSMutableArray *mWords = [[NSMutableArray alloc] initWithCapacity:words.count];
-    
-    for (NSNumber *n in colors) {
-        NSInteger letterScore = 0;
-        if (n.integerValue == kLetterTypeGray) {
-            letterScore = 1;
-        } else if (n.integerValue == kLetterTypeLightRed) {
-            letterScore = 2;
-        }
-        [letterScores addObject:@(letterScore)];
-    }
-    
-    for (NSString *word in words) {
-        NSMutableArray *mLetters = letters.mutableCopy;
-        NSMutableArray *mLetterScores = letterScores.mutableCopy;
-        NSInteger wordScore = 0;
-        NSInteger actualWordScore = 0;
-        for (NSString *c in [self charactersFromString:word]) {
-            __block NSInteger bestScore = 0;
-            __block NSInteger bestIndex = 0;
-            [mLetters enumerateObjectsUsingBlock:^(NSString *letter, NSUInteger idx, BOOL *stop) {
-                if ([letter.lowercaseString isEqualToString:c]) {
-                    NSInteger letterScore = [[mLetterScores objectAtIndex:idx] integerValue];
-                    if (letterScore > bestScore) {
-                        bestScore = letterScore;
-                        bestIndex = idx;
-                    }
-                }
-            }];
-            wordScore += bestScore;
-            actualWordScore += bestScore ? 1 : 0;
-            [mLetters removeObjectAtIndex:bestIndex];
-            [mLetterScores removeObjectAtIndex:bestIndex];
-        }
-        [wordScores addObject:@(wordScore)];
-        [actualWordScores addObject:@(actualWordScore)];
-        [mWords addObject:[NSString stringWithFormat:@"%d/%d: %@", wordScore, actualWordScore, word]];
-    }
-    
-    NSArray *sorter = kSortStrategyKill ? wordScores : actualWordScores;
-    
-    NSDictionary *dict = [NSDictionary dictionaryWithObjects:sorter forKeys:mWords];
-    NSArray *sortedWords = [dict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        int int1 = [obj1 integerValue];
-        int int2 = [obj2 integerValue];
-        if (int1 == int2) return NSOrderedSame;
-        return (int1 < int2 ? NSOrderedAscending : NSOrderedDescending);
+        }];
+    } failureBlock: ^(NSError *error) {
+        if (failure) failure();
     }];
-    
-    return [[sortedWords reverseObjectEnumerator] allObjects];
-}
-
-- (NSArray *)charactersFromString:(NSString *)string {
-    NSMutableArray *characters = [[NSMutableArray alloc] initWithCapacity:string.length];
-    for (int i = 0; i < string.length; i++) {
-        NSString *ichar  = [NSString stringWithFormat:@"%c", [string characterAtIndex:i]];
-        [characters addObject:ichar];
-    }
-    return characters;
 }
 
 - (NSArray *)imageArrayFromImage:(UIImage *)image {
@@ -543,13 +352,62 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return [image cropToSize:CGSizeMake(kSquareSize, kSquareSize) usingMode:NYXCropModeCenter];
 }
 
-- (CGFloat)deviationBetweenArray:(NSArray *)array andReference:(NSArray *)reference {
-    if (array.count != reference.count) return MAXFLOAT;
-    CGFloat deviation = 0;
-    for (int i = 0; i < array.count; i++) {
-        deviation += fabsf([[array objectAtIndex:i] floatValue] - [[reference objectAtIndex:i] floatValue]);
-    }
-    return deviation;
+#pragma mark - Letters
+
+- (NSArray *)letterArrayFromImage:(UIImage *)screenshot {
+    NSMutableArray *letters = @[].mutableCopy;
+    NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
+    [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+        NSInteger grayHorizontal1 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
+        }
+        
+        NSInteger grayHorizontal2 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
+        }
+        
+        NSInteger grayHorizontal3 = 0;
+        for (int i = 0; i < floor(image.size.width); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
+        }
+        
+        NSInteger grayVertical1 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
+        }
+        
+        NSInteger grayVertical2 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
+        }
+        
+        NSInteger grayVertical3 = 0;
+        for (int i = 0; i < floor(image.size.height); i++) {
+            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
+            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
+        }
+        
+        NSInteger qPoint = 0;
+        if ([self deviationBetweenArray:[[image colorAtPoint:CGPointMake(88, 88)] components] andReference:textColorArray] < 1) {
+            qPoint = 1;
+        }
+        
+        if (kGenerateArrays) {
+            NSLog(@"NSArray *%@ = @[@%d, @%d, @%d, @%d, @%d, @%d, @%d];", [@"abcdefghijklmnopqrstuvwxyz" substringWithRange:NSMakeRange(idx, 1)], grayHorizontal1, grayHorizontal2, grayHorizontal3, grayVertical1, grayVertical2, grayVertical3, qPoint);
+        } else {
+            NSString *letter = [self stringForCellWithTextColorArray:@[@(grayHorizontal1), @(grayHorizontal2), @(grayHorizontal3), @(grayVertical1), @(grayVertical2), @(grayVertical3), @(qPoint)]];
+            [letters addObject:letter];
+        }
+    }];
+    
+    return letters;
 }
 
 - (NSString *)stringForCellWithTextColorArray:(NSArray *)textColorArray {
@@ -625,28 +483,199 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return letter;
 }
 
-- (void)getLatestImageFromAlbumWithSuccess:(ImageActionBlock)success failure:(ActionBlock)failure {
-    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+- (CGFloat)deviationBetweenArray:(NSArray *)array andReference:(NSArray *)reference {
+    if (array.count != reference.count) return MAXFLOAT;
+    CGFloat deviation = 0;
+    for (int i = 0; i < array.count; i++) {
+        deviation += fabsf([[array objectAtIndex:i] floatValue] - [[reference objectAtIndex:i] floatValue]);
+    }
+    return deviation;
+}
+
+#pragma mark - Colors
+
+- (NSArray *)colorArrayFromImage:(UIImage *)image {
+    NSMutableArray *colorArray = @[].mutableCopy;
+    NSArray *squareImages = [self imageArrayFromImage:image];
+    for (UIImage *squareImage in squareImages) {
+        NSInteger type = [self letterTypeForColor:[squareImage colorAtPoint:CGPointMake(10, 10)]];
+        [colorArray addObject:@(type)];
+    }
     
-    // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
-    [library enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-        
-        // Within the group enumeration block, filter to enumerate just photos.
-        [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-        
-        // Chooses the photo at the last index
-        [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:([group numberOfAssets] - 1)] options:0 usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
-            
-            // The end of the enumeration is signaled by asset == nil.
-            if (alAsset) {
-                ALAssetRepresentation *representation = [alAsset defaultRepresentation];
-                UIImage *latestPhoto = [UIImage imageWithCGImage:[representation fullScreenImage]];
-                if (success) success(latestPhoto);
-            }
-        }];
-    } failureBlock: ^(NSError *error) {
-        if (failure) failure();
+    return colorArray;
+}
+
+- (kLetterType)letterTypeForColor:(UIColor *)color {
+    NSArray *components = [color components];
+    
+    NSArray *lightBlue = @[@(0.4705882), @(0.7843137), @(0.9607843), @(1)];
+    NSArray *darkBlue = @[@(0), @(0.6352941), @(1), @(1)];
+    NSArray *gray1 = @[@(0.9019608), @(0.8980392), @(0.8862745), @(1)];
+    NSArray *gray2 = @[@(0.9137255), @(0.9098039), @(0.8980392), @(1)];
+    NSArray *lightRed = @[@(0.9686275), @(0.6), @(0.5529412), @(1)];
+    NSArray *darkRed = @[@(1), @(0.2627451), @(0.1843137), @(1)];
+    
+    __block CGFloat lightBlueDeviation = 0;
+    __block CGFloat darkBlueDeviation = 0;
+    __block CGFloat gray1Deviation = 0;
+    __block CGFloat gray2Deviation = 0;
+    __block CGFloat lightRedDeviation = 0;
+    __block CGFloat darkRedDeviation = 0;
+    
+    [components enumerateObjectsUsingBlock:^(NSNumber *component, NSUInteger idx, BOOL *stop) {
+        lightBlueDeviation += fabsf(component.floatValue - [[lightBlue objectAtIndex:idx] floatValue]);
+        darkBlueDeviation += fabsf(component.floatValue - [[darkBlue objectAtIndex:idx] floatValue]);
+        gray1Deviation += fabsf(component.floatValue - [[gray1 objectAtIndex:idx] floatValue]);
+        gray2Deviation += fabsf(component.floatValue - [[gray2 objectAtIndex:idx] floatValue]);
+        lightRedDeviation += fabsf(component.floatValue - [[lightRed objectAtIndex:idx] floatValue]);
+        darkRedDeviation += fabsf(component.floatValue - [[darkRed objectAtIndex:idx] floatValue]);
     }];
+    
+    if (lightBlueDeviation < darkBlueDeviation
+        && lightBlueDeviation < gray1Deviation
+        && lightBlueDeviation < gray2Deviation
+        && lightBlueDeviation < lightRedDeviation
+        && lightBlueDeviation < darkRedDeviation) {
+        return kLetterTypeLightBlue;
+    }
+    
+    if (darkBlueDeviation < gray1Deviation
+        && darkBlueDeviation < gray2Deviation
+        && darkBlueDeviation < lightRedDeviation
+        && darkBlueDeviation < darkRedDeviation) {
+        return kLetterTypeDarkBlue;
+    }
+    
+    if (gray1Deviation < gray2Deviation
+        && gray1Deviation < lightRedDeviation
+        && gray1Deviation < darkRedDeviation) {
+        return kLetterTypeGray;
+    }
+    
+    if (gray2Deviation < lightRedDeviation
+        && gray2Deviation < darkRedDeviation) {
+        return kLetterTypeGray;
+    }
+    
+    if (lightRedDeviation < darkRedDeviation) {
+        return kLetterTypeLightRed;
+    }
+    
+    if (darkRedDeviation) {
+        return kLetterTypeDarkRed;
+    }
+    
+    return kLetterTypeUnknown;
+}
+
+#pragma mark - Words
+
+- (NSArray *)masterWordList {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"en_longest_to_shortest" ofType:@"txt"];
+    NSString *wordlist = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
+    NSArray *words = [wordlist componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    return words;
+}
+
+- (NSArray *)wordsForletterArray:(NSArray *)letterArray {
+    NSMutableString *letterArrayString = @"".mutableCopy;
+    for (NSString *letter in letterArray) {
+        [letterArrayString appendString:letter.lowercaseString];
+    }
+    NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
+    
+    NSMutableArray *matchedWords = @[].mutableCopy;
+    for (NSString *word in masterWordList) {
+        if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
+            NSMutableArray *charactersLeft = letterArray.mutableCopy;
+            for (NSString *c in [self charactersFromString:word]) {
+                NSString *uppercaseLetter = c.uppercaseString;
+                NSUInteger indexOfLetter = [charactersLeft indexOfObject:uppercaseLetter];
+                if (indexOfLetter != NSNotFound) {
+                    [charactersLeft removeObjectAtIndex:indexOfLetter];
+                } else {
+                    break;
+                }
+            }
+            if (charactersLeft.count == letterArray.count - word.length) {
+                [matchedWords addObject:word];
+            }
+        }
+    }
+    return matchedWords;
+}
+
+- (NSArray *)wordsSortedByScores:(NSArray *)words letters:(NSArray *)letters colors:(NSArray *)colors {
+    NSMutableArray *wordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
+    NSMutableArray *actualWordScores = [[NSMutableArray alloc] initWithCapacity:words.count];
+    NSMutableArray *letterScores = [[NSMutableArray alloc] initWithCapacity:colors.count];
+    NSMutableArray *mWords = [[NSMutableArray alloc] initWithCapacity:words.count];
+    
+    for (NSNumber *n in colors) {
+        NSInteger letterScore = 0;
+        if (n.integerValue == kLetterTypeGray) {
+            letterScore = 1;
+        } else if (n.integerValue == kLetterTypeLightRed) {
+            letterScore = 2;
+        }
+        [letterScores addObject:@(letterScore)];
+    }
+    
+    for (NSString *word in words) {
+        NSMutableArray *mLetters = letters.mutableCopy;
+        NSMutableArray *mLetterScores = letterScores.mutableCopy;
+        NSInteger wordScore = 0;
+        NSInteger actualWordScore = 0;
+        for (NSString *c in [self charactersFromString:word]) {
+            __block NSInteger bestScore = 0;
+            __block NSInteger bestIndex = 0;
+            [mLetters enumerateObjectsUsingBlock:^(NSString *letter, NSUInteger idx, BOOL *stop) {
+                if ([letter.lowercaseString isEqualToString:c]) {
+                    NSInteger letterScore = [[mLetterScores objectAtIndex:idx] integerValue];
+                    if (letterScore > bestScore) {
+                        bestScore = letterScore;
+                        bestIndex = idx;
+                    }
+                }
+            }];
+            wordScore += bestScore;
+            actualWordScore += bestScore ? 1 : 0;
+            [mLetters removeObjectAtIndex:bestIndex];
+            [mLetterScores removeObjectAtIndex:bestIndex];
+        }
+        [wordScores addObject:@(wordScore)];
+        [actualWordScores addObject:@(actualWordScore)];
+        [mWords addObject:[NSString stringWithFormat:@"%d/%d: %@", wordScore, actualWordScore, word]];
+    }
+    
+    NSArray *sorter = kSortStrategyKill ? wordScores : actualWordScores;
+    
+    NSDictionary *dict = [NSDictionary dictionaryWithObjects:sorter forKeys:mWords];
+    NSArray *sortedWords = [dict keysSortedByValueUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        int int1 = [obj1 integerValue];
+        int int2 = [obj2 integerValue];
+        if (int1 == int2) return NSOrderedSame;
+        return (int1 < int2 ? NSOrderedAscending : NSOrderedDescending);
+    }];
+    
+    return [[sortedWords reverseObjectEnumerator] allObjects];
+}
+
+- (NSArray *)charactersFromString:(NSString *)string {
+    NSMutableArray *characters = [[NSMutableArray alloc] initWithCapacity:string.length];
+    for (int i = 0; i < string.length; i++) {
+        NSString *ichar  = [NSString stringWithFormat:@"%c", [string characterAtIndex:i]];
+        [characters addObject:ichar];
+    }
+    return characters;
+}
+
+#pragma mark - Generate
+
+- (void)generateArrays {
+    [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+    NSLog(@"----------- the only one left is 'z', look for 'o'");
+    [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
 }
 
 #pragma mark - Tests
