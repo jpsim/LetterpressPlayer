@@ -107,6 +107,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
     
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     cell.textLabel.text = [finalWords objectAtIndex:indexPath.row];
