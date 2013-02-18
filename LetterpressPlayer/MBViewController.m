@@ -82,13 +82,25 @@ typedef void (^ImageActionBlock)(UIImage *image);
     [self.view addSubview:refreshCountButton];
 }
 
+#pragma mark - Actions
+
 - (void)analyze {
+    [self refreshWordList:NO];
+}
+
+- (void)refreshCount {
+    [self refreshWordList:YES];
+}
+
+- (void)refreshWordList:(BOOL)update {
+    if (!possibleWords.count) update = NO;
+    
     tv.hidden = TRUE;
     analyzeButton.enabled = FALSE;
     refreshCountButton.enabled = FALSE;
     
     [indicator startAnimating];
-    activityLabel.text = @"Analyzing last photo album image.";
+    activityLabel.text = update ? @"Refreshing counts for last image." : @"Analyzing last photo album image.";
     
     double delayInSeconds = 0.1;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -98,7 +110,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
             analyzeButton.enabled = TRUE;
             refreshCountButton.enabled = TRUE;
             
-            tv.text = [self finalWordsFromImage:image].description;
+            tv.text = update ? [self updatedWordsFromImage:image].description : [self finalWordsFromImage:image].description;
         } failure:^{
             [indicator stopAnimating];
             activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
@@ -106,36 +118,6 @@ typedef void (^ImageActionBlock)(UIImage *image);
             refreshCountButton.enabled = FALSE;
         }];
     });
-}
-
-- (void)refreshCount {
-    if (possibleWords.count) {
-        tv.hidden = TRUE;
-        analyzeButton.enabled = FALSE;
-        refreshCountButton.enabled = FALSE;
-        
-        [indicator startAnimating];
-        activityLabel.text = @"Refreshing cell count for last image.";
-        
-        double delayInSeconds = 0.1;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
-                tv.hidden = FALSE;
-                analyzeButton.enabled = TRUE;
-                refreshCountButton.enabled = TRUE;
-                
-                tv.text = [self updatedWordsFromImage:image].description;
-            } failure:^{
-                [indicator stopAnimating];
-                activityLabel.text = @"Couldn't find your last photo album image. Please take a screenshot of your Letterpress game and return to this app.";
-                analyzeButton.enabled = TRUE;
-                refreshCountButton.enabled = FALSE;
-            }];
-        });
-    } else {
-        [self analyze];
-    }
 }
 
 #pragma mark - Global
@@ -691,46 +673,46 @@ typedef void (^ImageActionBlock)(UIImage *image);
 }
 
 - (BOOL)validateLetterArray:(NSArray *)letterArray forTestImage:(NSString *)testImage {
-    if ([testImage isEqualToString:@"l0.png"]) {
+    if ([testImage isEqualToString:@"l0"]) {
         return [letterArray isEqualToArray:@[@"K", @"K", @"O", @"P", @"W", @"Q", @"H", @"V", @"A", @"I", @"A", @"E", @"D", @"R", @"L", @"S", @"H", @"K", @"E", @"W", @"L", @"X", @"E", @"A", @"V"]];
         
-    } else if ([testImage isEqualToString:@"l1.png"]) {
+    } else if ([testImage isEqualToString:@"l1"]) {
         return [letterArray isEqualToArray:@[@"H", @"W", @"D", @"S", @"V", @"U", @"N", @"R", @"I", @"C", @"V", @"F", @"E", @"C", @"N", @"T", @"O", @"D", @"D", @"Y", @"B", @"F", @"P", @"I", @"X"]];
         
-    } else if ([testImage isEqualToString:@"l2.png"]) {
+    } else if ([testImage isEqualToString:@"l2"]) {
         return [letterArray isEqualToArray:@[@"E", @"W", @"A", @"K", @"R", @"P", @"I", @"B", @"D", @"T", @"A", @"C", @"R", @"P", @"Z", @"D", @"Y", @"E", @"S", @"F", @"G", @"T", @"T", @"S", @"A"]];
         
-    } else if ([testImage isEqualToString:@"l3.png"]) {
+    } else if ([testImage isEqualToString:@"l3"]) {
         return [letterArray isEqualToArray:@[@"C", @"H", @"R", @"Z", @"D", @"S", @"T", @"U", @"O", @"D", @"M", @"I", @"W", @"H", @"T", @"Z", @"Y", @"S", @"R", @"R", @"S", @"I", @"Y", @"P", @"I"]];
         
-    } else if ([testImage isEqualToString:@"l4.png"]) {
+    } else if ([testImage isEqualToString:@"l4"]) {
         return [letterArray isEqualToArray:@[@"N", @"M", @"M", @"N", @"N", @"N", @"N", @"D", @"O", @"W", @"P", @"M", @"W", @"S", @"O", @"D", @"U", @"G", @"I", @"C", @"E", @"Z", @"L", @"G", @"R"]];
         
-    } else if ([testImage isEqualToString:@"l5.png"]) {
+    } else if ([testImage isEqualToString:@"l5"]) {
         return [letterArray isEqualToArray:@[@"P", @"E", @"S", @"S", @"V", @"T", @"O", @"X", @"P", @"O", @"I", @"U", @"W", @"O", @"Z", @"C", @"N", @"X", @"H", @"P", @"C", @"F", @"L", @"U", @"I"]];
         
-    } else if ([testImage isEqualToString:@"l6.png"]) {
+    } else if ([testImage isEqualToString:@"l6"]) {
         return [letterArray isEqualToArray:@[@"Y", @"F", @"U", @"M", @"V", @"X", @"P", @"A", @"V", @"X", @"O", @"N", @"M", @"M", @"N", @"M", @"I", @"Q", @"H", @"E", @"A", @"I", @"G", @"M", @"C"]];
         
-    } else if ([testImage isEqualToString:@"l7.png"]) {
+    } else if ([testImage isEqualToString:@"l7"]) {
         return [letterArray isEqualToArray:@[@"A", @"O", @"E", @"B", @"T", @"L", @"M", @"F", @"S", @"V", @"O", @"C", @"S", @"V", @"B", @"O", @"S", @"Z", @"R", @"Z", @"T", @"S", @"C", @"W", @"P"]];
         
-    } else if ([testImage isEqualToString:@"l8.png"]) {
+    } else if ([testImage isEqualToString:@"l8"]) {
         return [letterArray isEqualToArray:@[@"S", @"T", @"N", @"W", @"C", @"H", @"V", @"B", @"R", @"P", @"G", @"I", @"H", @"N", @"U", @"H", @"M", @"U", @"K", @"T", @"O", @"T", @"J", @"I", @"E"]];
         
-    } else if ([testImage isEqualToString:@"l9.png"]) {
+    } else if ([testImage isEqualToString:@"l9"]) {
         return [letterArray isEqualToArray:@[@"R", @"A", @"I", @"P", @"E", @"V", @"T", @"M", @"S", @"Y", @"P", @"F", @"C", @"B", @"Y", @"S", @"Y", @"C", @"W", @"I", @"O", @"B", @"R", @"M", @"L"]];
         
-    } else if ([testImage isEqualToString:@"l10.png"]) {
+    } else if ([testImage isEqualToString:@"l10"]) {
         return [letterArray isEqualToArray:@[@"O", @"Z", @"S", @"D", @"A", @"T", @"L", @"S", @"G", @"Y", @"Y", @"E", @"T", @"L", @"T", @"B", @"I", @"F", @"Y", @"S", @"Y", @"A", @"V", @"C", @"T"]];
         
-    } else if ([testImage isEqualToString:@"l11.png"]) {
+    } else if ([testImage isEqualToString:@"l11"]) {
         return [letterArray isEqualToArray:@[@"S", @"P", @"T", @"A", @"D", @"R", @"L", @"O", @"N", @"P", @"N", @"E", @"E", @"N", @"P", @"S", @"V", @"Y", @"O", @"X", @"L", @"M", @"X", @"O", @"X"]];
         
-    } else if ([testImage isEqualToString:@"l12.png"]) {
+    } else if ([testImage isEqualToString:@"l12"]) {
         return [letterArray isEqualToArray:@[@"Q", @"G", @"E", @"F", @"J", @"V", @"I", @"F", @"B", @"W", @"M", @"K", @"R", @"M", @"E", @"N", @"S", @"I", @"P", @"P", @"M", @"V", @"V", @"U", @"E"]];
         
-    } else if ([testImage isEqualToString:@"l13.png"]) {
+    } else if ([testImage isEqualToString:@"l13"]) {
         return [letterArray isEqualToArray:@[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y"]];
         
     }
