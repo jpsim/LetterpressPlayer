@@ -25,18 +25,17 @@ typedef enum {
 
 @interface UIImage (LPAdditions)
 
+// Color Extraction
 - (UIColor *)colorAtPoint:(CGPoint)point;
+- (NSArray *)colorsAtPoints:(NSArray *)points;
 
+// Resizing
 - (UIImage *)cropToSize:(CGSize)newSize usingMode:(NYXCropMode)cropMode;
-
 - (UIImage *)cropToSize:(CGSize)newSize;
-
 - (UIImage *)scaleByFactor:(float)scaleFactor;
-
 - (UIImage *)scaleToFitSize:(CGSize)newSize;
 
 CGContextRef NYXCreateARGBBitmapContext(const size_t width, const size_t height, const size_t bytesPerRow);
-
 CGColorSpaceRef NYXGetRGBColorSpace(void);
 
 @end

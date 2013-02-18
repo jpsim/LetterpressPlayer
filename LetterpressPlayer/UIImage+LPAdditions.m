@@ -12,11 +12,15 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
 
 @implementation UIImage (LPAdditions)
 
-#pragma mark - Color at point
+#pragma mark - Color Extraction
 
 - (UIColor *)colorAtPoint:(CGPoint)point {
+    return [[self colorsAtPoints:@[[NSValue valueWithCGPoint:point]]] lastObject];
+}
+
+- (NSArray *)colorsAtPoints:(NSArray *)points {
     
-    UIColor *result = nil;
+    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:points.count];
     
     // First get the image into your data buffer
     CGImageRef imageRef = [self CGImage];
@@ -35,19 +39,22 @@ static CGColorSpaceRef __rgbColorSpace = NULL;
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
     CGContextRelease(context);
     
-    // Now your rawData contains the image data in the RGBA8888 pixel format.
-    int byteIndex = (bytesPerRow * point.y) + point.x * bytesPerPixel;
-    
-    CGFloat red   = (rawData[byteIndex]     * 1.0) / 255.0;
-    CGFloat green = (rawData[byteIndex + 1] * 1.0) / 255.0;
-    CGFloat blue  = (rawData[byteIndex + 2] * 1.0) / 255.0;
-    CGFloat alpha = (rawData[byteIndex + 3] * 1.0) / 255.0;
-    
-    result =  [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+    [points enumerateObjectsUsingBlock:^(NSValue *pointValue, NSUInteger idx, BOOL *stop) {
+        // Now your rawData contains the image data in the RGBA8888 pixel format.
+        CGPoint point = pointValue.CGPointValue;
+        int byteIndex = (bytesPerRow * point.y) + point.x * bytesPerPixel;
+        
+        CGFloat red   = (rawData[byteIndex]     * 1.0) / 255.0;
+        CGFloat green = (rawData[byteIndex + 1] * 1.0) / 255.0;
+        CGFloat blue  = (rawData[byteIndex + 2] * 1.0) / 255.0;
+        CGFloat alpha = (rawData[byteIndex + 3] * 1.0) / 255.0;
+        
+        [results addObject:[UIColor colorWithRed:red green:green blue:blue alpha:alpha]];
+    }];
     
     free(rawData);
     
-    return result;
+    return results;
 }
 
 #pragma mark - Resizing

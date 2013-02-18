@@ -112,7 +112,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 - (NSArray *)finalWordsFromImage:(UIImage *)image {
     currentLetters = [self letterArrayFromImage:image];
-    possibleWords = [self wordsForletterArray:currentLetters];
+    possibleWords = [self wordsForLetterArray:currentLetters];
     NSArray *colors = [self colorArrayFromImage:image];
     NSArray *wordsSortedByPoints = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
     return wordsSortedByPoints;
@@ -328,40 +328,73 @@ typedef void (^ImageActionBlock)(UIImage *image);
     NSMutableArray *letters = @[].mutableCopy;
     NSArray *textColorArray = @[@(0.09411765), @(0.1568628), @(0.1921569), @(1)];
     [[self imageArrayFromImage:screenshot] enumerateObjectsUsingBlock:^(UIImage *image, NSUInteger idx, BOOL *stop) {
+        NSInteger widthInt = floor(image.size.width);
+        NSInteger heightInt = floor(image.size.height);
+        
         NSInteger grayHorizontal1 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 48)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal1++;
+        NSMutableArray *grayHorizontalPoints1 = [[NSMutableArray alloc] initWithCapacity:widthInt];
+        for (int i = 0; i < widthInt; i++) {
+            [grayHorizontalPoints1 addObject:[NSValue valueWithCGPoint:CGPointMake(i, 48)]];
+        }
+        NSArray *grayHorizontalColors1 = [image colorsAtPoints:grayHorizontalPoints1];
+        for (UIColor *color in grayHorizontalColors1) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayHorizontal1++;
         }
         
         NSInteger grayHorizontal2 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 64)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal2++;
+        NSMutableArray *grayHorizontalPoints2 = [[NSMutableArray alloc] initWithCapacity:widthInt];
+        for (int i = 0; i < widthInt; i++) {
+            [grayHorizontalPoints2 addObject:[NSValue valueWithCGPoint:CGPointMake(i, 64)]];
+        }
+        NSArray *grayHorizontalColors2 = [image colorsAtPoints:grayHorizontalPoints2];
+        for (UIColor *color in grayHorizontalColors2) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayHorizontal2++;
         }
         
         NSInteger grayHorizontal3 = 0;
-        for (int i = 0; i < floor(image.size.width); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(i, 80)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayHorizontal3++;
+        NSMutableArray *grayHorizontalPoints3 = [[NSMutableArray alloc] initWithCapacity:widthInt];
+        for (int i = 0; i < widthInt; i++) {
+            [grayHorizontalPoints3 addObject:[NSValue valueWithCGPoint:CGPointMake(i, 80)]];
+        }
+        NSArray *grayHorizontalColors3 = [image colorsAtPoints:grayHorizontalPoints3];
+        for (UIColor *color in grayHorizontalColors3) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayHorizontal3++;
         }
         
         NSInteger grayVertical1 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(48, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical1++;
+        NSMutableArray *grayVerticalPoints1 = [[NSMutableArray alloc] initWithCapacity:heightInt];
+        for (int i = 0; i < heightInt; i++) {
+            [grayVerticalPoints1 addObject:[NSValue valueWithCGPoint:CGPointMake(48, i)]];
+        }
+        NSArray *grayVerticalColors1 = [image colorsAtPoints:grayVerticalPoints1];
+        for (UIColor *color in grayVerticalColors1) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayVertical1++;
         }
         
         NSInteger grayVertical2 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(64, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical2++;
+        NSMutableArray *grayVerticalPoints2 = [[NSMutableArray alloc] initWithCapacity:heightInt];
+        for (int i = 0; i < heightInt; i++) {
+            [grayVerticalPoints2 addObject:[NSValue valueWithCGPoint:CGPointMake(64, i)]];
+        }
+        NSArray *grayVerticalColors2 = [image colorsAtPoints:grayVerticalPoints2];
+        for (UIColor *color in grayVerticalColors2) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayVertical2++;
         }
         
         NSInteger grayVertical3 = 0;
-        for (int i = 0; i < floor(image.size.height); i++) {
-            NSArray *color = [[image colorAtPoint:CGPointMake(80, i)] components];
-            if ([self deviationBetweenArray:color andReference:textColorArray] < 1) grayVertical3++;
+        NSMutableArray *grayVerticalPoints3 = [[NSMutableArray alloc] initWithCapacity:heightInt];
+        for (int i = 0; i < heightInt; i++) {
+            [grayVerticalPoints3 addObject:[NSValue valueWithCGPoint:CGPointMake(80, i)]];
+        }
+        NSArray *grayVerticalColors3 = [image colorsAtPoints:grayVerticalPoints3];
+        for (UIColor *color in grayVerticalColors3) {
+            NSArray *components = color.components;
+            if ([self deviationBetweenArray:components andReference:textColorArray] < 1) grayVertical3++;
         }
         
         NSInteger qPoint = 0;
@@ -445,9 +478,9 @@ typedef void (^ImageActionBlock)(UIImage *image);
         }
     }];
     
-    NSString *letter = [@"ABCDEFGHIJKLMNOPQRSTUVWXYZ" substringWithRange:NSMakeRange(minIndex, 1)];
-    if ([letter isEqualToString:@"O"] && [textColorArray.lastObject integerValue] == 1) {
-        letter = @"Q";
+    NSString *letter = [@"abcdefghijklmnopqrstuvwxyz" substringWithRange:NSMakeRange(minIndex, 1)];
+    if ([letter isEqualToString:@"o"] && [textColorArray.lastObject integerValue] == 1) {
+        letter = @"q";
     }
     
     return letter;
@@ -547,10 +580,10 @@ typedef void (^ImageActionBlock)(UIImage *image);
     return words;
 }
 
-- (NSArray *)wordsForletterArray:(NSArray *)letterArray {
+- (NSArray *)wordsForLetterArray:(NSArray *)letterArray {
     NSMutableString *letterArrayString = @"".mutableCopy;
     for (NSString *letter in letterArray) {
-        [letterArrayString appendString:letter.lowercaseString];
+        [letterArrayString appendString:letter];
     }
     NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
     
@@ -559,8 +592,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
         if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
             NSMutableArray *charactersLeft = letterArray.mutableCopy;
             for (NSString *c in [self charactersFromString:word]) {
-                NSString *uppercaseLetter = c.uppercaseString;
-                NSUInteger indexOfLetter = [charactersLeft indexOfObject:uppercaseLetter];
+                NSUInteger indexOfLetter = [charactersLeft indexOfObject:c];
                 if (indexOfLetter != NSNotFound) {
                     [charactersLeft removeObjectAtIndex:indexOfLetter];
                 } else {
@@ -600,7 +632,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
             __block NSInteger bestScore = 0;
             __block NSInteger bestIndex = 0;
             [mLetters enumerateObjectsUsingBlock:^(NSString *letter, NSUInteger idx, BOOL *stop) {
-                if ([letter.lowercaseString isEqualToString:c]) {
+                if ([letter isEqualToString:c]) {
                     NSInteger letterScore = [[mLetterScores objectAtIndex:idx] integerValue];
                     if (letterScore > bestScore) {
                         bestScore = letterScore;
@@ -634,8 +666,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
 - (NSArray *)charactersFromString:(NSString *)string {
     NSMutableArray *characters = [[NSMutableArray alloc] initWithCapacity:string.length];
     for (int i = 0; i < string.length; i++) {
-        NSString *ichar  = [NSString stringWithFormat:@"%c", [string characterAtIndex:i]];
-        [characters addObject:ichar];
+        [characters addObject:[string substringWithRange:NSMakeRange(i, 1)]];
     }
     return characters;
 }
@@ -643,16 +674,16 @@ typedef void (^ImageActionBlock)(UIImage *image);
 #pragma mark - Generate
 
 - (void)generateArrays {
-    [self letterArrayFromImage:[UIImage imageNamed:@"l13.png"]];
+    [self letterArrayFromImage:[UIImage imageNamed:@"l13"]];
     NSLog(@"----------- the only one left is 'z', look for 'o'");
-    [self letterArrayFromImage:[UIImage imageNamed:@"l2.png"]];
+    [self letterArrayFromImage:[UIImage imageNamed:@"l2"]];
 }
 
 #pragma mark - Tests
 
 - (void)runTests {
     for (int i = 0; i <= 13; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"l%d.png", i];
+        NSString *imageName = [NSString stringWithFormat:@"l%d", i];
         NSArray *letterArray = [self letterArrayFromImage:[UIImage imageNamed:imageName]];
         BOOL valid = [self validateLetterArray:letterArray forTestImage:imageName];
         NSLog(@"%@ is %@", imageName, valid ? @"valid" : @"invalid");
