@@ -78,8 +78,6 @@ typedef void (^ImageActionBlock)(UIImage *image);
         [self getLatestImageFromAlbumWithSuccess:^(UIImage *image) {
             ActionBlock successBlock = ^{
                 [self.tableView reloadData];
-                
-                [SVProgressHUD dismiss];
                 self.navigationItem.leftBarButtonItem.enabled = TRUE;
                 self.navigationItem.rightBarButtonItem.enabled = TRUE;
             };
@@ -138,6 +136,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     finalWords = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
+                    [SVProgressHUD showSuccessWithStatus:[self scoreFromColors:colors]];
                     if (success) success();
                 });
             });
@@ -156,6 +155,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             finalWords = [self wordsSortedByScores:possibleWords letters:currentLetters colors:colors];
+            [SVProgressHUD showSuccessWithStatus:[self scoreFromColors:colors]];
             if (success) success();
         });
     });
@@ -600,6 +600,36 @@ typedef void (^ImageActionBlock)(UIImage *image);
     }
     
     return kLetterTypeUnknown;
+}
+
+#pragma mark - Score
+
+- (NSString *)scoreFromColors:(NSArray *)colors {
+    NSInteger me = 0;
+    NSInteger opponent = 0;
+    for (NSNumber *n in colors) {
+        switch (n.integerValue) {
+            case kLetterTypeDarkBlue:
+                me++;
+                break;
+                
+            case kLetterTypeLightBlue:
+                me++;
+                break;
+                
+            case kLetterTypeDarkRed:
+                opponent++;
+                break;
+                
+            case kLetterTypeLightRed:
+                opponent++;
+                
+            default:
+                break;
+        }
+    }
+    
+    return [NSString stringWithFormat:@"Current Score\nMe: %d\nOpponent: %d", me, opponent];
 }
 
 #pragma mark - Words
