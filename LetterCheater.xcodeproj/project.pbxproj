@@ -22,6 +22,10 @@
 		E849E1BE16B00308009E2878 /* l13.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1BD16B00308009E2878 /* l13.png */; };
 		E8664E7816D2C3E400334FCF /* UIImage+LPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8664E7716D2C3E400334FCF /* UIImage+LPAdditions.m */; };
 		E8664E7B16D2D0B700334FCF /* MBViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8664E7A16D2D0B700334FCF /* MBViewController.m */; };
+		E86CE40B16D2FECD00CD1D52 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E86CE40A16D2FECD00CD1D52 /* Icon.png */; };
+		E86CE40D16D2FED100CD1D52 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E86CE40C16D2FED100CD1D52 /* Icon@2x.png */; };
+		E86CE41016D2FEE900CD1D52 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = E86CE40E16D2FEE900CD1D52 /* Icon-Small.png */; };
+		E86CE41116D2FEE900CD1D52 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E86CE40F16D2FEE900CD1D52 /* Icon-Small@2x.png */; };
 		E8BC2B2916D2D40E00DD289E /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E8BC2B2616D2D40E00DD289E /* SVProgressHUD.bundle */; };
 		E8BC2B2A16D2D40E00DD289E /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E8BC2B2816D2D40E00DD289E /* SVProgressHUD.m */; };
 		E8BC2B2C16D2D41F00DD289E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BC2B2B16D2D41F00DD289E /* QuartzCore.framework */; };
@@ -59,6 +63,10 @@
 		E8664E7716D2C3E400334FCF /* UIImage+LPAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+LPAdditions.m"; sourceTree = "<group>"; };
 		E8664E7916D2D0B700334FCF /* MBViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBViewController.h; sourceTree = "<group>"; };
 		E8664E7A16D2D0B700334FCF /* MBViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBViewController.m; sourceTree = "<group>"; };
+		E86CE40A16D2FECD00CD1D52 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = ../Icon.png; sourceTree = "<group>"; };
+		E86CE40C16D2FED100CD1D52 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "../Icon@2x.png"; sourceTree = "<group>"; };
+		E86CE40E16D2FEE900CD1D52 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "../Icon-Small.png"; sourceTree = "<group>"; };
+		E86CE40F16D2FEE900CD1D52 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "../Icon-Small@2x.png"; sourceTree = "<group>"; };
 		E8BC2B2616D2D40E00DD289E /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		E8BC2B2716D2D40E00DD289E /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		E8BC2B2816D2D40E00DD289E /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
@@ -118,6 +126,17 @@
 				E8E357AA16AFADDA007B3B50 /* l0.png */,
 			);
 			name = "Test Data";
+			sourceTree = "<group>";
+		};
+		E86CE3F916D2FE7400CD1D52 /* Icon */ = {
+			isa = PBXGroup;
+			children = (
+				E86CE40E16D2FEE900CD1D52 /* Icon-Small.png */,
+				E86CE40F16D2FEE900CD1D52 /* Icon-Small@2x.png */,
+				E86CE40C16D2FED100CD1D52 /* Icon@2x.png */,
+				E86CE40A16D2FECD00CD1D52 /* Icon.png */,
+			);
+			name = Icon;
 			sourceTree = "<group>";
 		};
 		E8BC2B2516D2D40E00DD289E /* SVProgressHUD */ = {
@@ -183,6 +202,7 @@
 		E8E3578916AFACD0007B3B50 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E86CE3F916D2FE7400CD1D52 /* Icon */,
 				E8E3578A16AFACD0007B3B50 /* LetterCheater-Info.plist */,
 				E8E3578B16AFACD0007B3B50 /* InfoPlist.strings */,
 				E8E3578E16AFACD0007B3B50 /* main.m */,
@@ -266,6 +286,10 @@
 				E849E1BB16AFEECF009E2878 /* l1.png in Resources */,
 				E849E1BE16B00308009E2878 /* l13.png in Resources */,
 				E8BC2B2916D2D40E00DD289E /* SVProgressHUD.bundle in Resources */,
+				E86CE40B16D2FECD00CD1D52 /* Icon.png in Resources */,
+				E86CE40D16D2FED100CD1D52 /* Icon@2x.png in Resources */,
+				E86CE41016D2FEE900CD1D52 /* Icon-Small.png in Resources */,
+				E86CE41116D2FEE900CD1D52 /* Icon-Small@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
