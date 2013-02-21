@@ -27,7 +27,7 @@ typedef enum {
 } kLetterType;
 
 typedef void (^ActionBlock)();
-typedef void (^ImageActionBlock)(UIImage *image);
+typedef void (^ImageBlock)(UIImage *image);
 
 @implementation MBViewController
 
@@ -163,7 +163,7 @@ typedef void (^ImageActionBlock)(UIImage *image);
 
 #pragma mark - Screenshot Parsing
 
-- (void)getLatestImageFromAlbumWithSuccess:(ImageActionBlock)success failure:(ActionBlock)failure {
+- (void)getLatestImageFromAlbumWithSuccess:(ImageBlock)success failure:(ActionBlock)failure {
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     
     // Enumerate just the photos and videos group by using ALAssetsGroupSavedPhotos.
