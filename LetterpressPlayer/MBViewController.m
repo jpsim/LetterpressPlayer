@@ -15,6 +15,7 @@
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
 #define kRunTests           FALSE
+#define kRunStressTests     FALSE
 #define kSortStrategyKill   TRUE
 
 typedef enum {
@@ -41,6 +42,9 @@ typedef void (^ImageBlock)(UIImage *image);
         return;
     } else if (kRunTests) {
         [self runTests];
+        return;
+    } else if (kRunStressTests) {
+        [self runStressTests];
         return;
     } else {
         [self setupUI];
@@ -741,6 +745,27 @@ typedef void (^ImageBlock)(UIImage *image);
 }
 
 #pragma mark - Tests
+
+- (void)runStressTests {
+    NSDate *total = [NSDate date];
+    masterWordList = [self masterWordList];
+    for (int i = 0; i <= 13; i++) {
+        NSDate *start = [NSDate date];
+        
+        NSString *imageName = [NSString stringWithFormat:@"l%d", i];
+        UIImage *image = [UIImage imageNamed:imageName];
+        NSArray *colors = [self colorArrayFromImage:image];
+        NSDate *colorsTime = [NSDate date];
+        NSArray *letters = [self letterArrayFromImage:image];
+        NSDate *lettersTime = [NSDate date];
+        NSArray *words = [self wordsForLetterArray:letters];
+        NSDate *wordsTime = [NSDate date];
+        NSArray *final = [self wordsSortedByScores:words letters:letters colors:colors];
+        NSDate *finalTime = [NSDate date];
+        NSLog(@"Colors: %f\nLetters: %f\nWords: %f\nFinal (%d): %f", [colorsTime timeIntervalSinceDate:start], [lettersTime timeIntervalSinceDate:colorsTime], [wordsTime timeIntervalSinceDate:lettersTime], final.count, [finalTime timeIntervalSinceDate:wordsTime]);
+    }
+    NSLog(@"Total Run Time: %f", [[NSDate date] timeIntervalSinceDate:total]);
+}
 
 - (void)runTests {
     for (int i = 0; i <= 13; i++) {
