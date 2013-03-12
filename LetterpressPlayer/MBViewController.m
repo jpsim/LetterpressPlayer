@@ -15,7 +15,7 @@
 #define kSquareSize         128.0
 #define kGenerateArrays     FALSE
 #define kRunTests           FALSE
-#define kRunStressTests     FALSE
+#define kRunStressTests     TRUE
 #define kSortStrategyKill   TRUE
 
 typedef enum {
@@ -656,6 +656,53 @@ typedef void (^ImageBlock)(UIImage *image);
     for (NSString *word in masterWordList) {
         if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
             NSMutableArray *charactersLeft = letterArray.mutableCopy;
+            for (NSString *c in [self charactersFromString:word]) {
+                NSUInteger indexOfLetter = [charactersLeft indexOfObject:c];
+                if (indexOfLetter != NSNotFound) {
+                    [charactersLeft removeObjectAtIndex:indexOfLetter];
+                } else {
+                    break;
+                }
+            }
+            if (charactersLeft.count == letterArray.count - word.length) {
+                [matchedWords addObject:word];
+            }
+        }
+    }
+    return matchedWords;
+}
+
+- (NSArray *)sortedWordsForLetterArray:(NSArray *)letterArray colors:(NSArray *)colors {
+    NSMutableString *letterArrayString = @"".mutableCopy;
+    for (NSString *letter in letterArray) {
+        [letterArrayString appendString:letter];
+    }
+    NSCharacterSet *blockSet = [NSCharacterSet characterSetWithCharactersInString:letterArrayString];
+    
+    NSMutableArray *letterScores = [[NSMutableArray alloc] initWithCapacity:colors.count];
+    NSMutableArray *letterSteals = [[NSMutableArray alloc] initWithCapacity:colors.count];
+    
+    for (NSNumber *n in colors) {
+        NSInteger letterScore = 0;
+        NSInteger letterSteal = 0;
+        if (n.integerValue == kLetterTypeGray) {
+            letterScore = 1;
+        } else if (n.integerValue == kLetterTypeLightRed) {
+            letterScore = 1;
+            letterSteal = 1;
+        }
+        [letterScores addObject:@(letterScore)];
+        [letterSteals addObject:@(letterSteal)];
+    }
+    
+    NSMutableArray *mLetterArray = [[NSMutableArray alloc] initWithCapacity:letterArray.count];
+    
+    NSMutableArray *matchedWords = @[].mutableCopy;
+    for (NSString *word in masterWordList) {
+        if ([blockSet isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]) {
+            NSMutableArray *charactersLeft = letterArray.mutableCopy;
+            NSInteger score = 0;
+            NSInteger steals = 0;
             for (NSString *c in [self charactersFromString:word]) {
                 NSUInteger indexOfLetter = [charactersLeft indexOfObject:c];
                 if (indexOfLetter != NSNotFound) {
