@@ -2,8 +2,6 @@
 
 Solves Letterpress games via OCR and colour categorization. Work in progress.
 
-Disclaimer: This code is *nasty ugly*, but functional.
-
 # Usage
 
 Take a screenshot of a Letterpress game then launch this app immediately. Wait a few seconds and you'll see all possible words, ordered by score.
