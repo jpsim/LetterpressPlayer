@@ -12,12 +12,11 @@ Right now, this is more of a "cheating" app, but the end goal is to have a fully
 
 # To Do List
 
-1. Improve performance. Analysis takes ~7s on my iPhone 5.
-2. Refactor: this code was written in a few hours and its sense of style is frightening.
-3. Improve UI. Currently awful.
-4. Improve scoring algorithm to account for making tiles deep blue and finishing a game when a winning word is possible.
-5. Keep a list of played words.
-6. Build a physical iOS testing machine to automate playing.
+1. Improve performance
+2. Refactor
+3. Improve UI
+4. Improve scoring algorithm to finish a game when a winning word is possible
+5. Keep a list of played words
 
 # Disclaimer
 
