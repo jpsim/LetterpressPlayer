@@ -383,7 +383,7 @@
 				INFOPLIST_FILE = "LetterpressPlayer/LetterCheater-Info.plist";
 				PRODUCT_NAME = LetterCheater;
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75F388CE-F678-4FC1-ACD9-DAB18FEE475F";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E47DE746-FFC1-44E6-AED5-6D3CACB06B6D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -396,7 +396,7 @@
 				GCC_PREFIX_HEADER = "LetterpressPlayer/LetterCheater-Prefix.pch";
 				INFOPLIST_FILE = "LetterpressPlayer/LetterCheater-Info.plist";
 				PRODUCT_NAME = LetterCheater;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18D3A269-B96A-47D7-A00A-DA8424E004FB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "18C00819-7946-47A1-901B-08268039383E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
