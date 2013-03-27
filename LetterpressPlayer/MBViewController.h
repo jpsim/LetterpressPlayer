@@ -15,4 +15,6 @@
     NSArray *finalWords;
 }
 
+- (BOOL)runTests;
+
 @end

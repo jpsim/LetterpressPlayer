@@ -767,14 +767,17 @@ typedef void (^ImageBlock)(UIImage *image);
     NSLog(@"Total Run Time: %f", [[NSDate date] timeIntervalSinceDate:total]);
 }
 
-- (void)runTests {
+- (BOOL)runTests {
+    NSInteger validCount = 0;
     for (int i = 0; i <= 13; i++) {
         NSString *imageName = [NSString stringWithFormat:@"l%d", i];
         NSArray *letterArray = [self letterArrayFromImage:[UIImage imageNamed:imageName]];
         BOOL valid = [self validateLetterArray:letterArray forTestImage:imageName];
         NSLog(@"%@ is %@", imageName, valid ? @"valid" : @"invalid");
         if (!valid) NSLog(@"letterArray: %@", letterArray);
+        validCount += valid;
     }
+    return validCount == 14;
 }
 
 - (BOOL)validateLetterArray:(NSArray *)letterArray forTestImage:(NSString *)testImage {

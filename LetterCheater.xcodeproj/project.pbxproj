@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E825CBAC17038B45006DDB9E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E825CBAB17038B45006DDB9E /* SenTestingKit.framework */; };
+		E825CBAD17038B45006DDB9E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3578216AFACD0007B3B50 /* UIKit.framework */; };
+		E825CBAE17038B45006DDB9E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3578416AFACD0007B3B50 /* Foundation.framework */; };
+		E825CBB417038B45006DDB9E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E825CBB217038B45006DDB9E /* InfoPlist.strings */; };
+		E825CBB717038B45006DDB9E /* LetterCheaterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E825CBB617038B45006DDB9E /* LetterCheaterTests.m */; };
 		E849E1B016AFEECF009E2878 /* l12.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1A416AFEECF009E2878 /* l12.png */; };
 		E849E1B116AFEECF009E2878 /* l11.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1A516AFEECF009E2878 /* l11.png */; };
 		E849E1B216AFEECF009E2878 /* l10.png in Resources */ = {isa = PBXBuildFile; fileRef = E849E1A616AFEECF009E2878 /* l10.png */; };
@@ -44,8 +49,25 @@
 		E8E357AE16AFAF48007B3B50 /* UIColor+LPAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E8E357AD16AFAF48007B3B50 /* UIColor+LPAdditions.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		E825CBBC17038B62006DDB9E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E8E3577516AFACD0007B3B50 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E8E3577D16AFACD0007B3B50;
+			remoteInfo = LetterCheater;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		5404C0A94CFD4830821D537A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E825CBAA17038B45006DDB9E /* LetterCheaterTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LetterCheaterTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E825CBAB17038B45006DDB9E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		E825CBB117038B45006DDB9E /* LetterCheaterTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LetterCheaterTests-Info.plist"; sourceTree = "<group>"; };
+		E825CBB317038B45006DDB9E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E825CBB517038B45006DDB9E /* LetterCheaterTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LetterCheaterTests.h; sourceTree = "<group>"; };
+		E825CBB617038B45006DDB9E /* LetterCheaterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LetterCheaterTests.m; sourceTree = "<group>"; };
+		E825CBB817038B45006DDB9E /* LetterCheaterTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LetterCheaterTests-Prefix.pch"; sourceTree = "<group>"; };
 		E849E1A416AFEECF009E2878 /* l12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l12.png; sourceTree = "<group>"; };
 		E849E1A516AFEECF009E2878 /* l11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l11.png; sourceTree = "<group>"; };
 		E849E1A616AFEECF009E2878 /* l10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = l10.png; sourceTree = "<group>"; };
@@ -92,6 +114,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E825CBA617038B45006DDB9E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E825CBAC17038B45006DDB9E /* SenTestingKit.framework in Frameworks */,
+				E825CBAD17038B45006DDB9E /* UIKit.framework in Frameworks */,
+				E825CBAE17038B45006DDB9E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E8E3577B16AFACD0007B3B50 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -107,6 +139,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E825CBAF17038B45006DDB9E /* LetterCheaterTests */ = {
+			isa = PBXGroup;
+			children = (
+				E825CBB517038B45006DDB9E /* LetterCheaterTests.h */,
+				E825CBB617038B45006DDB9E /* LetterCheaterTests.m */,
+				E825CBB017038B45006DDB9E /* Supporting Files */,
+			);
+			path = LetterCheaterTests;
+			sourceTree = "<group>";
+		};
+		E825CBB017038B45006DDB9E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E825CBB117038B45006DDB9E /* LetterCheaterTests-Info.plist */,
+				E825CBB217038B45006DDB9E /* InfoPlist.strings */,
+				E825CBB817038B45006DDB9E /* LetterCheaterTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		E849E1BC16AFEED4009E2878 /* Test Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				E8E3578816AFACD0007B3B50 /* LetterCheater */,
+				E825CBAF17038B45006DDB9E /* LetterCheaterTests */,
 				E8E3578116AFACD0007B3B50 /* Frameworks */,
 				E8E3577F16AFACD0007B3B50 /* Products */,
 			);
@@ -162,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				E8E3577E16AFACD0007B3B50 /* LetterCheater.app */,
+				E825CBAA17038B45006DDB9E /* LetterCheaterTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -175,6 +229,7 @@
 				E8E3578416AFACD0007B3B50 /* Foundation.framework */,
 				E8E3578616AFACD0007B3B50 /* CoreGraphics.framework */,
 				5404C0A94CFD4830821D537A /* libPods.a */,
+				E825CBAB17038B45006DDB9E /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -217,6 +272,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E825CBA917038B45006DDB9E /* LetterCheaterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E825CBBB17038B45006DDB9E /* Build configuration list for PBXNativeTarget "LetterCheaterTests" */;
+			buildPhases = (
+				E825CBA517038B45006DDB9E /* Sources */,
+				E825CBA617038B45006DDB9E /* Frameworks */,
+				E825CBA717038B45006DDB9E /* Resources */,
+				E825CBA817038B45006DDB9E /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E825CBBD17038B62006DDB9E /* PBXTargetDependency */,
+			);
+			name = LetterCheaterTests;
+			productName = LetterCheaterTests;
+			productReference = E825CBAA17038B45006DDB9E /* LetterCheaterTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		E8E3577D16AFACD0007B3B50 /* LetterCheater */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E8E357A216AFACD0007B3B50 /* Build configuration list for PBXNativeTarget "LetterCheater" */;
@@ -257,11 +331,20 @@
 			projectRoot = "";
 			targets = (
 				E8E3577D16AFACD0007B3B50 /* LetterCheater */,
+				E825CBA917038B45006DDB9E /* LetterCheaterTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E825CBA717038B45006DDB9E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E825CBB417038B45006DDB9E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E8E3577C16AFACD0007B3B50 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -295,7 +378,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		E825CBA817038B45006DDB9E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$RUN_UNIT_TEST_WITH_IOS_SIM\" = \"YES\" ]; then\ntest_bundle_path=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.$WRAPPER_EXTENSION\"\nios-sim launch \"$(dirname \"$TEST_HOST\")\" --setenv DYLD_INSERT_LIBRARIES=/../../Library/PrivateFrameworks/IDEBundleInjection.framework/IDEBundleInjection --setenv XCInjectBundle=\"$test_bundle_path\" --setenv XCInjectBundleInto=\"$TEST_HOST\" --args -SenTest All \"$test_bundle_path\"\necho \"Finished running tests with ios-sim\"\nelse\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		E825CBA517038B45006DDB9E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E825CBB717038B45006DDB9E /* LetterCheaterTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E8E3577A16AFACD0007B3B50 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -311,7 +418,23 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		E825CBBD17038B62006DDB9E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E8E3577D16AFACD0007B3B50 /* LetterCheater */;
+			targetProxy = E825CBBC17038B62006DDB9E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
+		E825CBB217038B45006DDB9E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E825CBB317038B45006DDB9E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		E8E3578B16AFACD0007B3B50 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -323,6 +446,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		E825CBB917038B45006DDB9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LetterCheater.app/LetterCheater";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LetterCheaterTests/LetterCheaterTests-Prefix.pch";
+				INFOPLIST_FILE = "LetterCheaterTests/LetterCheaterTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		E825CBBA17038B45006DDB9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LetterCheater.app/LetterCheater";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LetterCheaterTests/LetterCheaterTests-Prefix.pch";
+				INFOPLIST_FILE = "LetterCheaterTests/LetterCheaterTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		E8E357A016AFACD0007B3B50 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -404,6 +569,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E825CBBB17038B45006DDB9E /* Build configuration list for PBXNativeTarget "LetterCheaterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E825CBB917038B45006DDB9E /* Debug */,
+				E825CBBA17038B45006DDB9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E8E3577816AFACD0007B3B50 /* Build configuration list for PBXProject "LetterCheater" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
