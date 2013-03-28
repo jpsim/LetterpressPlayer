@@ -8,7 +8,7 @@ Take a screenshot of a Letterpress game then launch this app immediately. Wait a
 
 # Goals
 
-Right now, this is more of a "cheating" app, but the end goal is to have a fully automated Letterpress player. Items in the To Do List will address that… eventually.
+Right now, this is more of a "cheating" app, but the end goal is to have a fully automated Letterpress player. Items in the To Do List will address that... eventually.
 
 # To Do List
 
