@@ -821,7 +821,7 @@ typedef void (^ImageBlock)(UIImage *image);
         return [letterArray isEqualToArray:@[@"q", @"g", @"e", @"f", @"j", @"v", @"i", @"f", @"b", @"w", @"m", @"k", @"r", @"m", @"e", @"n", @"s", @"i", @"p", @"p", @"m", @"v", @"v", @"u", @"e"]];
         
     } else if ([testImage isEqualToString:@"l13"]) {
-        return [letterArray isEqualToArray:@[@"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y"]];
+        return [letterArray isEqualToArray:@[@"b", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y"]];
         
     }
     return NO;
